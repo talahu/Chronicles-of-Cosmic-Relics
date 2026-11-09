@@ -72,4 +72,4 @@ Mô hình pre-trained: **không sử dụng**.
 
 ## Giấy phép / License
 
-*[Đội chọn giấy phép cho mã nguồn, ví dụ MIT.]*
+MIT
