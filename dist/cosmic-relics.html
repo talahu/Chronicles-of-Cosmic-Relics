@@ -1,0 +1,1290 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b1c">
+<title>Chronicles of Cosmic Relics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root{
+ --space:#070b1c; --space-2:#10173a;
+ --panel:#eef1f7; --panel-2:#e1e6f0; --ink:#151c33; --muted:#56607a; --line:rgba(21,28,51,.16);
+ --beacon:#f4b63f; --beacon-ink:#8a5800; --signal:#0d7891; --signal-bright:#5fd0e6;
+ --ok:#1b7d52; --bad:#b8352a; --wire-on:#2bb7d6; --wire-off:#b9c0cf; --gate:#ffffff;
+ --hud:rgba(8,12,30,.74); --hud-ink:#e8ecf6; --hud-muted:#a3adc6;
+ --f-display:"Chakra Petch","Be Vietnam Pro",system-ui,sans-serif;
+ --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ color-scheme:light;
+ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+ --panel:#141a33; --panel-2:#1c2445; --ink:#e8ecf6; --muted:#a3adc6; --line:rgba(232,236,246,.14);
+ --beacon-ink:#f4c364; --signal:#5fd0e6; --ok:#4cc38a; --bad:#ff8172; --wire-on:#5fd0e6; --wire-off:#3a4366; --gate:#1c2445; color-scheme:dark; } }
+:root[data-theme="dark"]{ --panel:#141a33; --panel-2:#1c2445; --ink:#e8ecf6; --muted:#a3adc6; --line:rgba(232,236,246,.14);
+ --beacon-ink:#f4c364; --signal:#5fd0e6; --ok:#4cc38a; --bad:#ff8172; --wire-on:#5fd0e6; --wire-off:#3a4366; --gate:#1c2445; color-scheme:dark; }
+html{height:100%;background:var(--space);scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;height:100%;background:var(--space);color:var(--hud-ink);font:400 16px/1.55 var(--f-body);overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--signal-bright);outline-offset:2px}
+.num{font-family:var(--f-display);font-variant-numeric:tabular-nums}
+#app{position:relative;width:100%;height:100%;overflow:hidden}
+#stars{position:absolute;inset:0;width:100%;height:100%}
+.screen{position:absolute;inset:0;display:none}
+.screen.on{display:flex}
+
+/* buttons */
+.btn{border:1px solid var(--line);background:transparent;border-radius:12px;padding:.7em 1.15em;font-family:var(--f-display);font-weight:600;font-size:1rem;letter-spacing:.01em;color:var(--ink);min-height:44px;transition:transform .12s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--beacon);border-color:var(--beacon);color:#231500}
+.btn.primary:hover{background:#ffc75c}
+.btn.ghost{color:var(--muted)}
+.btn.sm{min-height:34px;padding:.35em .8em;font-size:.88rem}
+.btn.round{width:48px;height:48px;padding:0;border-radius:50%;flex:none}
+.btn.glow{box-shadow:0 0 0 0 rgba(244,182,63,.7);animation:ring 1.8s infinite}
+@keyframes ring{70%{box-shadow:0 0 0 14px rgba(244,182,63,0)}100%{box-shadow:0 0 0 0 rgba(244,182,63,0)}}
+.hudbtn{border:1px solid rgba(255,255,255,.14);background:var(--hud);color:var(--hud-ink);border-radius:12px;min-height:42px;min-width:42px;padding:0 .8em;font-family:var(--f-display);font-weight:600;font-size:.9rem;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.hudbtn.muted{color:var(--hud-muted);text-decoration:line-through}
+
+/* title */
+#scrTitle{align-items:center;justify-content:center;padding:24px clamp(20px,5vw,72px);gap:clamp(16px,4vw,64px)}
+.ttext{max-width:34rem;position:relative;z-index:1}
+.kicker{font-family:var(--f-display);font-weight:500;color:var(--hud-muted);font-size:.9rem;margin:0 0 1.2rem}
+h1.title{font-family:var(--f-display);font-weight:700;font-size:clamp(2.4rem,6.4vw,4.6rem);line-height:.92;letter-spacing:-.02em;margin:0;color:#fff}
+h1.title span{display:block}
+h1.title span:last-child{color:transparent;-webkit-text-stroke:1.2px #ffe0a0;text-shadow:0 0 28px rgba(244,182,63,.35)}
+.sub{font-family:var(--f-display);font-weight:500;font-size:clamp(1.05rem,2.2vw,1.35rem);color:#ffd987;margin:.9rem 0 1.1rem}
+.story{color:#c9d0e2;max-width:32rem;margin:0 0 1.6rem;font-size:1rem}
+.trow{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.trow .btn:not(.primary){color:var(--hud-ink);border-color:rgba(255,255,255,.2)}
+#loading{color:var(--hud-muted);font-size:.9rem;margin-top:.8rem}
+.globe-wrap{position:relative;flex:none;width:min(46vh,40vw,420px);aspect-ratio:1}
+.globe-wrap canvas{width:100%;height:100%;display:block;border-radius:50%;filter:drop-shadow(0 0 40px rgba(120,150,255,.12))}
+.tcorner{position:absolute;top:12px;right:12px;display:flex;gap:8px;z-index:2}
+@media (max-width:760px){ #scrTitle{flex-direction:column;justify-content:flex-start;overflow:auto;padding-top:56px} .globe-wrap{width:min(58vw,260px)} .ttext{text-align:left} }
+@media (max-height:500px) and (orientation:landscape){ .globe-wrap{width:min(70vh,260px)} h1.title{font-size:2.2rem} .kicker{padding-right:100px;margin-bottom:.6rem} .story{font-size:.9rem;margin-bottom:1rem} #scrTitle{padding-top:12px} }
+
+/* planets */
+#scrPlanets{flex-direction:column;align-items:center;justify-content:safe center;padding:20px;gap:18px;overflow:auto}
+#scrPlanets h2{font-family:var(--f-display);font-weight:600;font-size:clamp(1.4rem,3vw,2rem);margin:0;color:#fff}
+.pcards{display:flex;gap:clamp(12px,3vw,40px);flex-wrap:wrap;justify-content:center;width:100%;max-width:1200px}
+.pcard{flex:1 1 240px;max-width:360px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.6rem;padding:8px}
+.pcard canvas{width:min(200px,42vw);aspect-ratio:1;border-radius:50%}
+.pcard h3{font-family:var(--f-display);font-weight:700;font-size:1.6rem;margin:.2rem 0 0;color:#fff}
+.pcard p{margin:0;color:#c9d0e2;font-size:.95rem;max-width:30ch}
+.pc-bar{width:180px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.pc-bar i{display:block;height:100%;background:var(--beacon);width:0;transition:width .6s}
+.pc-prog{font-family:var(--f-display);color:#ffd987;font-size:.9rem}
+@media (max-height:520px){ .pcard canvas{width:120px} .pcard p{display:none} }
+
+/* map */
+#scrMap{display:none}
+#scrMap.on{display:block}
+#map{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block;cursor:crosshair}
+.hudtop{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none}
+.hudtop>*{pointer-events:auto}
+#coord{font-family:var(--f-display);font-weight:500;background:var(--hud);border-radius:12px;padding:.55em .9em;font-size:.92rem;color:#bfeaf4;border:1px solid rgba(95,208,230,.25);min-height:42px;display:flex;align-items:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.spacer{flex:1}
+#planetChip{color:#ffd987}
+.scanner{position:absolute;left:10px;bottom:12px;background:var(--hud);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:.7em .9em;display:flex;gap:.8em;align-items:center;max-width:min(340px,calc(100% - 20px));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:none}
+.compass{width:44px;height:44px;border-radius:50%;border:1px solid rgba(95,208,230,.4);display:grid;place-items:center;flex:none}
+#arrow{width:26px;height:26px;transition:transform .15s linear}
+.scanner small{display:block;color:var(--hud-muted);font-size:.78rem}
+#nearName{font-family:var(--f-display);font-weight:600;font-size:1rem;display:block;line-height:1.2}
+#nearDist{color:#bfeaf4;font-size:.85rem}
+#prog{font-family:var(--f-display);color:#ffd987;font-size:.8rem;display:block;margin-top:.2rem}
+#interact{position:absolute;left:50%;bottom:max(14px,calc(12px));transform:translateX(-50%);z-index:3;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+#interact.done{background:var(--panel);color:var(--ink);border-color:var(--panel)}
+@media (max-width:640px){ #toast{top:112px} #btnSources{display:none} #interact{bottom:96px;max-width:calc(100% - 24px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #coord{font-size:.8rem;order:9;flex-basis:auto} }
+#toast{position:absolute;left:50%;top:64px;transform:translate(-50%,-10px);background:var(--panel);color:var(--ink);padding:.75em 1.1em;border-radius:12px;max-width:min(460px,calc(100% - 24px));font-size:.95rem;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* overlays */
+.overlay{position:absolute;inset:0;z-index:30;background:rgba(3,6,16,.66);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:12px}
+.overlay.open{display:flex}
+.sheet{background:var(--panel);color:var(--ink);width:min(760px,100%);max-height:100%;overflow:auto;border-radius:20px;padding:clamp(16px,3vw,28px);position:relative;-webkit-user-select:text;user-select:text;box-shadow:0 30px 80px rgba(0,0,0,.5);overscroll-behavior:contain}
+.sheet.wide{width:min(980px,100%)}
+.x{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;border:0;background:var(--panel-2);color:var(--ink);font-size:1.2rem;line-height:1;z-index:2}
+.sheet h2{font-family:var(--f-display);font-weight:700;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.1;margin:.1rem 0 .4rem}
+.sheet h3{font-family:var(--f-display);font-weight:600;font-size:1.15rem;margin:1.1rem 0 .5rem}
+.hint{color:var(--muted);font-size:.93rem;margin:.2rem 0 .8rem}
+.actions{display:flex;gap:.6rem;justify-content:flex-end;flex-wrap:wrap;margin-top:1.2rem;align-items:center}
+.log{background:#0a1028;color:#d8def0;border-radius:14px;padding:.9em 1em;font-size:.95rem;margin:0 0 1rem;cursor:pointer;min-height:3em}
+.ln{margin:.25em 0 .55em}
+.ln b{font-family:var(--f-display);font-weight:600;font-size:.78rem;margin-right:.6em;padding:.12em .5em;border-radius:6px;background:rgba(255,255,255,.08);color:#a3adc6}
+.ln.robot b{color:#7fe0f2;background:rgba(95,208,230,.12)} .ln.robot span{color:#bfeaf4}
+.ln.relic b{color:#ffd987;background:rgba(244,182,63,.14)} .ln.relic span{color:#ffe7b5;font-style:italic}
+.ln.alert b{color:#ffb4a8;background:rgba(255,120,100,.14)}
+.ln.ok b{color:#9ff0c6;background:rgba(76,195,138,.15)} .ln.ok span{color:#d7f8e6}
+.ln.note{font-size:.84rem;color:#a3adc6;border-left:2px solid rgba(244,182,63,.5);padding-left:.8em}
+.dossier{display:grid;grid-template-columns:minmax(0,240px) 1fr;gap:18px;align-items:start;margin-top:.2rem}
+.dossier .art{width:100%;height:auto;border-radius:14px;display:block}
+.art.sm{width:160px;border-radius:12px;display:block}
+.dlg-head{display:flex;justify-content:center;margin-bottom:.8rem}
+.tag{display:inline-block;font-family:var(--f-display);font-weight:600;font-size:.8rem;margin:0;color:var(--muted)}
+.tag.ok{color:var(--beacon-ink)}
+.mission{margin:0 0 .6rem;color:var(--ink)}
+dl{display:grid;grid-template-columns:auto 1fr;gap:.25rem .9rem;margin:0;font-size:.92rem}
+dt{color:var(--muted)} dd{margin:0}
+.facts{margin:0;padding-left:1.1em} .facts li{margin:.35em 0}
+@media (max-width:600px){ .dossier{grid-template-columns:1fr} .dossier .art{max-width:300px} }
+.meter{display:flex;align-items:center;gap:.7em;flex:1;font-size:.88rem;color:var(--muted)}
+.meter .bar{flex:1;height:8px;background:var(--panel-2);border-radius:4px;overflow:hidden;min-width:60px}
+.meter .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--signal-bright),var(--beacon));transition:width .15s}
+.meter b{color:var(--ink);min-width:3ch;text-align:right}
+.dustwrap{position:relative;width:100%;border-radius:14px;overflow:hidden;margin-bottom:.8rem;touch-action:none}
+.dustwrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.dlayer{cursor:grab}
+.dlabel{position:absolute;left:10px;bottom:8px;font-family:var(--f-display);font-size:.75rem;color:rgba(255,255,255,.75);pointer-events:none;text-shadow:0 1px 2px #000}
+.antwrap{width:100%;border-radius:14px;overflow:hidden;touch-action:none}
+.ant{width:100%;display:block;touch-action:none;cursor:grab}
+.antctl{display:flex;align-items:center;gap:.8em;margin-top:.8rem}
+.amsg,.cmsg,.qmsg{min-height:1.4em;font-family:var(--f-display);color:var(--signal);margin:.6rem 0 0}
+.legend{margin:0 0 .6rem;padding-left:1.1em;font-size:.88rem;color:var(--muted)}
+.circ svg{width:100%;height:auto;display:block;max-height:52vh}
+.circ .w{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.sw{cursor:pointer} .sw rect{fill:var(--panel-2);stroke:var(--line);stroke-width:1.5} .sw circle{fill:#9aa4bf;transition:cx .15s} .sw text{font-family:var(--f-display);font-weight:700;font-size:15px;text-anchor:middle;fill:var(--muted)}
+.sw.on rect{fill:rgba(95,208,230,.22);stroke:var(--wire-on)} .sw.on circle{fill:var(--wire-on)}
+.sw:focus-visible rect{stroke:var(--beacon);stroke-width:3}
+.gate rect{fill:var(--gate);stroke:var(--wire-off);stroke-width:2} .gate text{font-family:var(--f-display);font-weight:700;font-size:15px;text-anchor:middle;fill:var(--ink)}
+.gate.on rect{stroke:var(--wire-on)}
+.not rect{fill:var(--gate);stroke:var(--muted);stroke-width:1.2} .not text{font-family:var(--f-display);font-size:10px;font-weight:700;text-anchor:middle;fill:var(--muted)}
+.lamp{fill:var(--wire-off);transition:fill .3s} .lamp.on{fill:var(--beacon);filter:drop-shadow(0 0 8px var(--beacon))}
+.olabel{font-family:var(--f-display);font-size:11px;text-anchor:middle;fill:var(--muted)}
+.qq{font-weight:600;font-size:1.08rem;margin:.4rem 0 .8rem}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.55rem}
+.opt{text-align:left;border:1.5px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:12px;padding:.75em 1em;min-height:48px;font-size:.98rem}
+.opt:hover:not(:disabled){border-color:var(--signal)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--panel));color:var(--ink)}
+.opt.wrong{border-color:var(--bad);opacity:.6;text-decoration:line-through}
+.opt:disabled{cursor:default}
+.qex p{background:var(--panel-2);border-radius:12px;padding:.8em 1em;margin:.6rem 0 0}
+.tabs{display:flex;gap:.5rem;margin:0 0 .9rem;padding-right:46px}
+.tab{border:1px solid var(--line);background:transparent;border-radius:999px;padding:.45em 1em;font-family:var(--f-display);font-weight:600;color:var(--muted);min-height:40px}
+.tab.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.hmwrap{width:100%;border-radius:14px;overflow:hidden;background:#000}
+.hm{width:100%;display:block;cursor:pointer}
+.hpill{min-height:1.6em;margin:.7rem 0 0;display:flex;gap:.5em;align-items:center;flex-wrap:wrap;font-size:.93rem}
+.hpill span{color:var(--muted)} .hpill em{font-style:normal;font-family:var(--f-display);font-size:.82rem;color:var(--muted)} .hpill em.ok{color:var(--beacon-ink)}
+.ign{font-family:var(--f-display);font-weight:600;font-size:1.15rem;margin:.6rem 0 .2rem;color:var(--beacon-ink)}
+.meaning{color:var(--muted);margin:.2rem 0 0;max-width:60ch}
+.pdone{margin:0 auto 0 0;font-family:var(--f-display);font-weight:600;color:var(--ok)}
+.loglist{list-style:none;margin:0;padding:0;display:grid;gap:.4rem}
+.logrow{width:100%;display:flex;gap:.8em;align-items:center;text-align:left;background:var(--panel-2);border:1px solid transparent;border-radius:12px;padding:.6em .9em;color:var(--ink)}
+.logrow:hover{border-color:var(--line)}
+.logrow i{width:10px;height:10px;border-radius:50%;background:var(--wire-off);flex:none}
+.logrow.ok i{background:var(--beacon);box-shadow:0 0 8px var(--beacon)}
+.logrow span{flex:1;min-width:0} .logrow b{display:block;font-weight:600} .logrow small{color:var(--muted)}
+.logrow em{font-style:normal;font-family:var(--f-display);font-size:.8rem;color:var(--muted);white-space:nowrap} .logrow.ok em{color:var(--beacon-ink)}
+.src{padding-left:1.1em} .src li{margin:.4em 0} .src span{display:block;color:var(--muted);font-size:.88rem}
+/* final */
+#scrFinal{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:1rem}
+#scrFinal h2{font-family:var(--f-display);font-weight:700;font-size:clamp(2.2rem,6vw,4rem);margin:0;color:transparent;-webkit-text-stroke:1.2px #ffe0a0;text-shadow:0 0 30px rgba(244,182,63,.45)}
+#scrFinal p{max-width:40rem;color:#c9d0e2}
+#scrFinal .btn:not(.primary){color:var(--hud-ink);border-color:rgba(255,255,255,.2)}
+@media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
+</style>
+</head>
+<body>
+<div id="app">
+ <canvas id="stars" aria-hidden="true"></canvas>
+
+ <section class="screen on" id="scrTitle" aria-label="Chronicles of Cosmic Relics">
+  <div class="tcorner"><button class="hudbtn" id="langBtn" data-tt="lang">EN</button><button class="hudbtn" id="soundBtn" data-tt="sound" aria-pressed="true">♪</button></div>
+  <div class="globe-wrap"><canvas id="globeTitle" aria-hidden="true"></canvas></div>
+  <div class="ttext">
+   <p class="kicker" data-t="challenge"></p>
+   <h1 class="title"><span>Chronicles of</span><span>Cosmic Relics</span></h1>
+   <p class="sub" data-t="subtitle"></p>
+   <p class="story" data-t="story"></p>
+   <div class="trow"><button class="btn primary" id="btnStart" disabled>…</button><button class="btn" id="btnSourcesTitle" data-t="sources"></button></div>
+   <p id="loading">…</p>
+  </div>
+ </section>
+
+ <section class="screen" id="scrPlanets">
+  <h2 data-t="choose"></h2>
+  <div class="pcards">
+   <div class="pcard" id="pc-moon"><canvas id="globe-moon" aria-hidden="true"></canvas><h3 data-t="moon"></h3><p data-t="moonDesc"></p><span class="pc-prog"></span><div class="pc-bar"><i></i></div><button class="btn primary pc-go" data-p="moon"></button></div>
+   <div class="pcard" id="pc-mars"><canvas id="globe-mars" aria-hidden="true"></canvas><h3 data-t="mars"></h3><p data-t="marsDesc"></p><span class="pc-prog"></span><div class="pc-bar"><i></i></div><button class="btn primary pc-go" data-p="mars"></button></div>
+   <div class="pcard" id="pc-deep"><canvas id="globe-deep" aria-hidden="true"></canvas><h3 data-t="deep"></h3><p data-t="deepDesc"></p><span class="pc-prog"></span><div class="pc-bar"><i></i></div><button class="btn primary pc-go" data-p="deep"></button></div>
+  </div>
+  <button class="btn" id="btnBack" data-t="back" style="color:var(--hud-ink);border-color:rgba(255,255,255,.2)"></button>
+ </section>
+
+ <section class="screen" id="scrMap">
+  <canvas id="map" aria-label="Map"></canvas>
+  <div class="hudtop">
+   <button class="hudbtn" id="planetChip" data-tt="planetSwitch">—</button>
+   <div id="coord" aria-live="off">0.00°N, 0.00°E</div>
+   <span class="spacer"></span>
+   <button class="hudbtn" id="btnHeritage" data-t="heritage"></button>
+   <button class="hudbtn" id="btnLog" data-t="log"></button>
+   <button class="hudbtn" id="langBtn2" data-tt="lang">EN</button>
+   <button class="hudbtn" id="btnSources" data-tt="sources">i</button>
+  </div>
+  <div class="scanner"><div class="compass"><svg id="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h15M13 6l6 6-6 6" fill="none" stroke="#5fd0e6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+   <div><small id="nearLabel"></small><span id="nearName"></span><span id="nearDist"></span><span id="prog"></span></div></div>
+  <button class="btn primary" id="interact" hidden></button>
+ </section>
+
+ <section class="screen" id="scrFinal">
+  <h2 data-t="finalT"></h2>
+  <p id="finalP"></p>
+  <div class="trow" style="justify-content:center"><button class="btn primary" id="btnFinalMap" data-t="heritage"></button><button class="btn" id="btnFinalBack" data-t="explore"></button><button class="btn" id="btnReplay" data-t="replay"></button></div>
+ </section>
+
+ <div id="toast" role="status" aria-live="polite"></div>
+
+ <div class="overlay" id="ovRelic" aria-hidden="true" role="dialog" aria-modal="true"><div class="sheet"><button class="x" data-close="ovRelic" aria-label="Close">✕</button><div id="relicBody"></div></div></div>
+ <div class="overlay" id="ovHeritage" aria-hidden="true" role="dialog" aria-modal="true"><div class="sheet wide"><button class="x" data-close="ovHeritage" aria-label="Close">✕</button><h2 data-t="heritage"></h2><div id="heritageBody"></div></div></div>
+ <div class="overlay" id="ovLog" aria-hidden="true" role="dialog" aria-modal="true"><div class="sheet"><button class="x" data-close="ovLog" aria-label="Close">✕</button><h2 data-t="log"></h2><div id="logBody"></div></div></div>
+ <div class="overlay" id="ovSources" aria-hidden="true" role="dialog" aria-modal="true"><div class="sheet"><button class="x" data-close="ovSources" aria-label="Close">✕</button><h2 id="srcTitle"></h2><div id="srcBody"></div></div></div>
+</div>
+<script>
+(()=>{'use strict';
+// ===== RELIC DATA (NASA sources: NSSDCA, science.nasa.gov, JPL mission pages) =====
+const RELICS = [
+// ---------------- MOON ----------------
+{id:'apollo11', planet:'moon', kind:'lm', mini:'antenna', lat:0.674, lon:23.473, date:'1969-07-20', dateKind:'landed',
+ name:'Apollo 11 – Eagle',
+ site:{vi:'Biển Tĩnh Lặng (Mare Tranquillitatis)', en:'Sea of Tranquility (Mare Tranquillitatis)'},
+ mission:{vi:'Tầng hạ cánh của tàu đổ bộ Eagle – chuyến đi đầu tiên đưa con người lên Mặt Trăng.', en:'Descent stage of the lunar module Eagle – the first crewed landing on the Moon.'},
+ ended:{vi:'Ở lại từ ngày 21/07/1969, khi Armstrong và Aldrin cất cánh trở về.', en:'Left behind on Jul 21, 1969, when Armstrong and Aldrin lifted off.'},
+ facts:{vi:['Neil Armstrong và Buzz Aldrin là hai người đầu tiên đi bộ trên Mặt Trăng, trong khoảng 2,5 giờ.','Gương phản xạ laser họ đặt lại vẫn đang được dùng: nhờ nó, các nhà khoa học đo được Mặt Trăng đang rời xa Trái Đất khoảng 3,8 cm mỗi năm.','Chuyến bay mang về 21,5 kg đất đá Mặt Trăng để nghiên cứu.'],
+        en:['Neil Armstrong and Buzz Aldrin became the first people to walk on the Moon, for about 2.5 hours.','The laser reflector they set up is still in use: it shows the Moon drifting away from Earth by about 3.8 cm a year.','The crew brought home 21.5 kg of lunar rock and soil.']},
+ voice:{vi:'Dấu chân của hai phi hành gia vẫn còn quanh tôi... Trên Mặt Trăng không có gió để xóa chúng đi.', en:'The astronauts\u2019 footprints are still all around me... There is no wind on the Moon to erase them.'},
+ quiz:{q:{vi:'Thiết bị nào Apollo 11 để lại vẫn được các nhà khoa học sử dụng đến ngày nay?', en:'Which piece of equipment left by Apollo 11 do scientists still use today?'},
+  o:{vi:['Gương phản xạ laser','Máy quay truyền hình','Xe tự hành','Kính thiên văn'], en:['The laser reflector','The TV camera','A rover','A telescope']},
+  ex:{vi:'Các đài quan sát bắn tia laser vào tấm gương và đo thời gian ánh sáng quay về, từ đó tính khoảng cách Trái Đất – Mặt Trăng chính xác đến từng centimet.', en:'Observatories fire lasers at the mirror and time the light\u2019s return trip, measuring the Earth–Moon distance to within centimetres.'}}},
+
+{id:'apollo14', planet:'moon', kind:'lm', mini:'circuit', lat:-3.645, lon:-17.471, date:'1971-02-05', dateKind:'landed',
+ name:'Apollo 14 – Antares',
+ site:{vi:'Vùng cao nguyên Fra Mauro', en:'Fra Mauro highlands'},
+ mission:{vi:'Tầng hạ cánh của tàu Antares và chiếc xe kéo tay MET.', en:'Descent stage of the lunar module Antares and the MET hand cart.'},
+ ended:{vi:'Ở lại từ ngày 06/02/1971.', en:'Left behind on Feb 6, 1971.'},
+ facts:{vi:['Alan Shepard và Edgar Mitchell kéo chiếc xe đẩy hai bánh MET để chở dụng cụ và mẫu đá.','Đá ở Fra Mauro được cho là bị bắn văng ra từ vụ va chạm khổng lồ tạo nên lòng chảo Imbrium.','Shepard đã đánh hai quả bóng golf bằng một chiếc gậy tự chế – chúng vẫn nằm đâu đó gần đây.'],
+        en:['Alan Shepard and Edgar Mitchell pulled the MET, a two-wheeled cart, to carry tools and samples.','Fra Mauro rocks are thought to be debris thrown out by the giant impact that formed the Imbrium basin.','Shepard hit two golf balls with a home-made club – they are still lying somewhere nearby.']},
+ voice:{vi:'Hai quả bóng golf của Alan Shepard vẫn nằm đâu đó trong lớp bụi xám quanh đây...', en:'Alan Shepard\u2019s two golf balls are still out there somewhere in the grey dust...'},
+ quiz:{q:{vi:'Alan Shepard đã làm điều gì nổi tiếng ở Fra Mauro?', en:'What famous thing did Alan Shepard do at Fra Mauro?'},
+  o:{vi:['Đánh hai quả bóng golf','Trồng một cái cây','Thả diều','Chơi bóng đá'], en:['Hit two golf balls','Planted a tree','Flew a kite','Played football']},
+  ex:{vi:'Ông gắn đầu gậy golf vào một dụng cụ lấy mẫu và đánh bóng trong trọng lực chỉ bằng khoảng 1/6 Trái Đất.', en:'He attached a golf club head to a sampling tool and swung in gravity only about 1/6 of Earth\u2019s.'}}},
+
+{id:'apollo15', planet:'moon', kind:'rover', mini:'circuit', lat:26.132, lon:3.634, date:'1971-07-30', dateKind:'landed',
+ name:'Apollo 15 – Lunar Roving Vehicle',
+ site:{vi:'Hadley – dãy núi Apennine', en:'Hadley–Apennine'},
+ mission:{vi:'Chiếc xe tự hành Mặt Trăng (LRV) đầu tiên do con người lái.', en:'The first Lunar Roving Vehicle driven by astronauts.'},
+ ended:{vi:'Đỗ lại vĩnh viễn từ ngày 02/08/1971.', en:'Parked for good on Aug 2, 1971.'},
+ facts:{vi:['David Scott và James Irwin lái xe khoảng 28 km – đi xa hơn hẳn các chuyến trước nhờ có xe.','Họ tìm thấy "Đá Khởi Nguyên" (Genesis Rock), mẫu đá hơn 4 tỷ năm tuổi từ lớp vỏ cổ của Mặt Trăng.','Scott thả một chiếc búa và một chiếc lông chim cùng lúc: chúng chạm đất cùng lúc, đúng như Galileo dự đoán.'],
+        en:['David Scott and James Irwin drove about 28 km – much farther than earlier crews could walk.','They found the "Genesis Rock", a piece of the Moon\u2019s ancient crust more than 4 billion years old.','Scott dropped a hammer and a feather together: they landed at the same time, just as Galileo predicted.']},
+ voice:{vi:'Bánh xe lưới thép của tôi đã lăn gần 28 km... Tôi vẫn đỗ ở đây, chờ một chuyến đi nữa.', en:'My wire-mesh wheels rolled almost 28 km... I am still parked here, waiting for one more drive.'},
+ quiz:{q:{vi:'David Scott thả một chiếc búa và một chiếc lông chim cùng lúc. Chuyện gì đã xảy ra?', en:'David Scott dropped a hammer and a feather at the same time. What happened?'},
+  o:{vi:['Cả hai chạm đất cùng lúc','Chiếc búa chạm đất trước','Chiếc lông chim lơ lửng','Chiếc lông chim rơi nhanh hơn'], en:['Both hit the ground together','The hammer landed first','The feather floated','The feather fell faster']},
+  ex:{vi:'Mặt Trăng không có không khí cản, nên mọi vật rơi nhanh như nhau – đúng như Galileo đã dự đoán từ hơn 300 năm trước.', en:'With no air resistance on the Moon, everything falls at the same rate – just as Galileo predicted over 300 years earlier.'}}},
+
+{id:'apollo17', planet:'moon', kind:'rover', mini:'dust', dust:'radiator', lat:20.191, lon:30.772, date:'1972-12-11', dateKind:'landed',
+ name:'Apollo 17 – Lunar Roving Vehicle',
+ site:{vi:'Thung lũng Taurus–Littrow', en:'Taurus–Littrow valley'},
+ mission:{vi:'Xe tự hành của chuyến hạ cánh có người gần đây nhất trên Mặt Trăng.', en:'Rover from the most recent crewed Moon landing.'},
+ ended:{vi:'Ở lại từ ngày 14/12/1972 – lần cuối con người rời Mặt Trăng (tính đến nay).', en:'Left on Dec 14, 1972 – the last time people left the Moon (so far).'},
+ facts:{vi:['Gene Cernan và nhà địa chất Harrison Schmitt lái xe khoảng 36 km quanh thung lũng.','Schmitt phát hiện "đất màu cam" – những hạt thủy tinh núi lửa phun trào khoảng 3,6 tỷ năm trước.','Bụi bám khắp nơi: phi hành gia phải dùng bản đồ và băng dính để sửa tấm chắn bùn bị gãy của xe.'],
+        en:['Gene Cernan and geologist Harrison Schmitt drove about 36 km around the valley.','Schmitt discovered "orange soil" – volcanic glass beads erupted about 3.6 billion years ago.','Dust got everywhere: the crew repaired a broken fender with maps and tape.']},
+ voice:{vi:'Tôi là chiếc xe cuối cùng con người lái trên Mặt Trăng... Đã hơn 50 năm rồi, tôi vẫn chờ họ quay lại.', en:'I am the last car people drove on the Moon... More than 50 years have passed, and I am still waiting for them to come back.'},
+ quiz:{q:{vi:'Khi tấm chắn bùn của xe bị gãy, phi hành gia Apollo 17 đã sửa bằng gì?', en:'When the rover\u2019s fender broke, what did the Apollo 17 crew fix it with?'},
+  o:{vi:['Bản đồ và băng dính','Đá Mặt Trăng','Mũ bảo hiểm','Dây điện'], en:['Maps and tape','Moon rocks','A helmet','Electrical wire']},
+  ex:{vi:'Không có tấm chắn, bánh xe hất bụi lên khắp người và thiết bị. Họ ghép các tấm bản đồ, dán băng dính và kẹp lại – sáng tạo ngay trên Mặt Trăng!', en:'Without a fender, the wheels sprayed dust over everything. They taped laminated maps together and clamped them on – engineering on the Moon!'}}},
+
+{id:'surveyor1', planet:'moon', kind:'lander', mini:'dust', dust:'solar', lat:-2.474, lon:-43.339, date:'1966-06-02', dateKind:'landed',
+ name:'Surveyor 1',
+ site:{vi:'Biển Bão (Oceanus Procellarum)', en:'Ocean of Storms (Oceanus Procellarum)'},
+ mission:{vi:'Tàu tự động đầu tiên của Mỹ hạ cánh nhẹ nhàng, an toàn lên Mặt Trăng.', en:'The first American spacecraft to make a soft landing on the Moon.'},
+ ended:{vi:'Liên lạc lần cuối ngày 07/01/1967.', en:'Last contact on Jan 7, 1967.'},
+ facts:{vi:['Gửi về Trái Đất 11.237 bức ảnh bề mặt Mặt Trăng.','Chứng minh mặt đất đủ cứng để tàu hạ cánh, không phải một lớp bụi sâu như nhiều người lo ngại.','Dữ liệu của nó giúp NASA chuẩn bị cho các chuyến Apollo có người.'],
+        en:['It sent back 11,237 pictures of the lunar surface.','It proved the ground was firm enough to land on – not deep dust, as some had feared.','Its data helped NASA prepare for the crewed Apollo landings.']},
+ voice:{vi:'Trước tôi, nhiều người lo tàu sẽ lún mất trong bụi. Tôi đã đứng vững... và chụp lại tất cả.', en:'Before me, people feared a lander would sink into the dust. I stood firm... and photographed everything.'},
+ quiz:{q:{vi:'Surveyor 1 đã chứng minh điều gì quan trọng cho các chuyến bay Apollo?', en:'What did Surveyor 1 prove that mattered for Apollo?'},
+  o:{vi:['Mặt đất đủ cứng để tàu đáp xuống','Mặt Trăng có nước lỏng','Mặt Trăng có không khí để thở','Mặt Trăng có từ trường mạnh'], en:['The ground could hold up a lander','The Moon has liquid water','The Moon has breathable air','The Moon has a strong magnetic field']},
+  ex:{vi:'Ba chân đáp của Surveyor 1 chỉ lún vài centimet. Nhờ vậy NASA tin rằng tàu Apollo cũng có thể hạ cánh an toàn.', en:'Surveyor 1\u2019s footpads sank only a few centimetres, convincing NASA that Apollo landers could touch down safely.'}}},
+
+{id:'surveyor3', planet:'moon', kind:'lander', mini:'circuit', lat:-3.015, lon:-23.418, date:'1967-04-20', dateKind:'landed',
+ name:'Surveyor 3',
+ site:{vi:'Biển Bão, gần nơi Apollo 12 hạ cánh', en:'Ocean of Storms, beside the Apollo 12 site'},
+ mission:{vi:'Tàu đổ bộ đầu tiên dùng gầu xúc để đào đất Mặt Trăng.', en:'The first lander to dig into the Moon with a scoop.'},
+ ended:{vi:'Liên lạc lần cuối ngày 04/05/1967.', en:'Last contact on May 4, 1967.'},
+ facts:{vi:['Gầu xúc của nó đào rãnh và thử độ cứng của đất Mặt Trăng.','Tháng 11/1969, phi hành gia Apollo 12 hạ cánh cách nó khoảng 180 m, đi bộ đến thăm và mang camera của nó về Trái Đất.','Đó vẫn là lần duy nhất con người đến thăm một robot trên một thiên thể khác.'],
+        en:['Its scoop dug trenches and tested how firm the lunar soil was.','In November 1969, Apollo 12 landed about 180 m away; the astronauts walked over and brought its camera home.','It is still the only time people have visited a robot on another world.']},
+ voice:{vi:'Hai năm sau khi tôi im lặng, có hai vị khách đi bộ tới. Họ là con người!', en:'Two years after I fell silent, two visitors walked up to me. They were humans!'},
+ quiz:{q:{vi:'Điều gì đặc biệt đã xảy ra với Surveyor 3 vào năm 1969?', en:'What special thing happened to Surveyor 3 in 1969?'},
+  o:{vi:['Phi hành gia Apollo 12 đến thăm và mang camera của nó về','Nó tự bay trở về Trái Đất','Nó bị một thiên thạch phá hủy','Nó được kéo về một căn cứ'], en:['Apollo 12 astronauts visited and took its camera home','It flew back to Earth by itself','A meteorite destroyed it','It was towed to a base']},
+  ex:{vi:'Pete Conrad và Alan Bean đi bộ đến chỗ nó. Các bộ phận mang về giúp nhà khoa học biết vật liệu thay đổi thế nào sau 2,5 năm trên Mặt Trăng.', en:'Pete Conrad and Alan Bean walked over to it. The parts they returned showed how materials change after 2.5 years on the Moon.'}}},
+
+{id:'surveyor7', planet:'moon', kind:'lander', mini:'antenna', lat:-40.86, lon:-11.47, date:'1968-01-10', dateKind:'landed',
+ name:'Surveyor 7',
+ site:{vi:'Rìa phía bắc hố Tycho', en:'North rim of Tycho crater'},
+ mission:{vi:'Tàu Surveyor cuối cùng, hạ cánh ở vùng cao nguyên gồ ghề.', en:'The last Surveyor, landed in the rugged highlands.'},
+ ended:{vi:'Liên lạc lần cuối ngày 21/02/1968.', en:'Last contact on Feb 21, 1968.'},
+ facts:{vi:['Hạ cánh ở vùng cao nguyên sáng màu – khác hẳn các "biển" tối và bằng phẳng.','Camera của nó chụp được những tia laser yếu ớt bắn lên từ hai đài quan sát trên Trái Đất.','Phân tích hóa học cho thấy đất cao nguyên khác với đất ở các vùng biển tối màu.'],
+        en:['It landed in the bright highlands – very different from the dark, flat "seas".','Its camera spotted faint laser beams fired from two observatories on Earth.','Its chemistry tests showed highland soil differs from the soil of the dark seas.']},
+ voice:{vi:'Từ rìa hố Tycho, tôi đã nhìn thấy những chấm sáng nhỏ xíu – tia laser từ Trái Đất gửi đến tôi.', en:'From the rim of Tycho I saw tiny points of light – lasers sent to me from Earth.'},
+ quiz:{q:{vi:'Camera của Surveyor 7 đã nhìn thấy gì được gửi lên từ Trái Đất?', en:'What did Surveyor 7\u2019s camera see coming from Earth?'},
+  o:{vi:['Tia laser','Pháo hoa','Tia chớp','Đèn máy bay'], en:['Laser beams','Fireworks','Lightning','Aircraft lights']},
+  ex:{vi:'Hai đài quan sát ở Mỹ chiếu laser về phía Mặt Trăng; Surveyor 7 chụp được những chấm sáng nhỏ – một thử nghiệm sớm về liên lạc bằng ánh sáng.', en:'Two US observatories aimed lasers at the Moon and Surveyor 7 imaged the tiny spots – an early test of communicating with light.'}}},
+
+{id:'ranger7', planet:'moon', kind:'impact', mini:'circuit', lat:-10.35, lon:-20.58, date:'1964-07-31', dateKind:'impact',
+ name:'Ranger 7',
+ site:{vi:'Biển Đã Biết (Mare Cognitum)', en:'Sea That Has Become Known (Mare Cognitum)'},
+ mission:{vi:'Tàu thăm dò chụp ảnh cận cảnh rồi lao thẳng xuống Mặt Trăng.', en:'A probe that took close-up pictures as it flew straight into the Moon.'},
+ ended:{vi:'Va chạm có chủ đích ngày 31/07/1964.', en:'Planned impact on Jul 31, 1964.'},
+ facts:{vi:['Trong 17 phút cuối trước khi va chạm, nó gửi về 4.308 bức ảnh.','Những bức ảnh cuối cùng cho thấy cả những hố nhỏ chỉ cỡ 1 mét.','Vùng nó rơi xuống được đặt tên là Mare Cognitum – "Biển Đã Biết".'],
+        en:['In its final 17 minutes it sent back 4,308 pictures.','The last images showed craters as small as about 1 metre.','The area it hit was named Mare Cognitum – "the Sea That Has Become Known".']},
+ voice:{vi:'Tôi được tạo ra để lao thẳng xuống Mặt Trăng và chụp ảnh đến giây cuối cùng. Tôi đã làm được.', en:'I was built to dive straight at the Moon and take pictures until the very last second. I did it.'},
+ quiz:{q:{vi:'Vì sao vùng Ranger 7 rơi xuống được đặt tên là "Biển Đã Biết"?', en:'Why was Ranger 7\u2019s impact area named "the Sea That Has Become Known"?'},
+  o:{vi:['Vì Ranger 7 đã chụp ảnh cận cảnh vùng này','Vì Apollo 11 hạ cánh ở đó','Vì nơi đó có nước','Vì ở đó có nhiều đá quý'], en:['Ranger 7 photographed it up close','Apollo 11 landed there','It contains water','It is full of gemstones']},
+  ex:{vi:'Lần đầu tiên con người nhìn rõ bề mặt Mặt Trăng ở cự ly gần, nên vùng này trở thành nơi "đã được biết đến".', en:'It was the first time people saw the lunar surface up close, so the area became "known".'}}},
+
+{id:'lcross', planet:'moon', kind:'impact', mini:'antenna', lat:-84.68, lon:-48.70, date:'2009-10-09', dateKind:'impact',
+ name:'LCROSS',
+ site:{vi:'Hố Cabeus, gần cực Nam', en:'Cabeus crater, near the south pole'},
+ mission:{vi:'Vụ va chạm có chủ đích để tìm nước trong vùng bóng tối vĩnh cửu.', en:'A planned impact to search for water in permanent shadow.'},
+ ended:{vi:'Va chạm ngày 09/10/2009.', en:'Impacted on Oct 9, 2009.'},
+ facts:{vi:['Tầng tên lửa Centaur nặng khoảng 2.300 kg đâm vào hố Cabeus, nơi ánh Mặt Trời chưa từng chiếu tới.','Tàu LCROSS bay xuyên qua đám bụi bắn lên, phân tích nó, rồi tự đâm xuống khoảng 4 phút sau.','Kết quả: có băng nước trên Mặt Trăng – tài nguyên quý cho các căn cứ trong tương lai.'],
+        en:['A 2,300 kg Centaur rocket stage hit Cabeus crater, where sunlight never reaches.','The LCROSS craft flew through the plume, analysed it, then impacted about 4 minutes later.','The result: there is water ice on the Moon – a precious resource for future bases.']},
+ voice:{vi:'Tôi lao vào bóng tối vĩnh cửu ở cực Nam để tìm câu trả lời: Mặt Trăng có nước không? Câu trả lời là CÓ.', en:'I dove into the eternal dark of the south pole to answer one question: is there water on the Moon? The answer is YES.'},
+ quiz:{q:{vi:'LCROSS đã phát hiện ra gì trong hố Cabeus luôn chìm trong bóng tối?', en:'What did LCROSS find inside the always-dark Cabeus crater?'},
+  o:{vi:['Băng nước','Vàng','Vi khuẩn sống','Dầu mỏ'], en:['Water ice','Gold','Living bacteria','Oil']},
+  ex:{vi:'Đám bụi bắn lên chứa hơi nước và băng. Nước có thể dùng để uống, tạo oxy và làm nhiên liệu tên lửa cho các chuyến thám hiểm sau này.', en:'The plume contained water vapour and ice – water that future explorers could drink, split into oxygen, or turn into rocket fuel.'}}},
+
+// ---------------- MARS ----------------
+{id:'viking1', planet:'mars', kind:'lander', mini:'antenna', lat:22.27, lon:-47.95, date:'1976-07-20', dateKind:'landed',
+ name:'Viking 1',
+ site:{vi:'Đồng bằng Chryse (Chryse Planitia)', en:'Chryse Planitia'},
+ mission:{vi:'Tàu đổ bộ đầu tiên của Mỹ hạ cánh thành công và làm việc trên Sao Hỏa.', en:'The first US spacecraft to land and operate successfully on Mars.'},
+ ended:{vi:'Mất liên lạc tháng 11/1982.', en:'Contact lost in November 1982.'},
+ facts:{vi:['Chụp những bức ảnh rõ nét đầu tiên từ bề mặt Sao Hỏa và làm việc hơn 6 năm.','Làm các thí nghiệm tìm dấu hiệu sự sống trong đất – kết quả đến nay vẫn còn được tranh luận.','Một lệnh phần mềm nhầm lẫn năm 1982 đã làm ăng-ten quay khỏi Trái Đất, và liên lạc mất từ đó.'],
+        en:['It took the first clear pictures from the Martian surface and worked for more than 6 years.','It tested the soil for signs of life – scientists still debate the results.','A mistaken software command in 1982 turned its antenna away from Earth, and contact was lost.']},
+ voice:{vi:'Một lệnh nhầm năm 1982 đã khiến ăng-ten của tôi quay đi khỏi Trái Đất. Từ đó tôi chỉ nghe thấy im lặng...', en:'A wrong command in 1982 turned my antenna away from Earth. Since then I have heard only silence...'},
+ quiz:{q:{vi:'Vì sao Viking 1 mất liên lạc với Trái Đất năm 1982?', en:'Why did Viking 1 lose contact with Earth in 1982?'},
+  o:{vi:['Một lệnh phần mềm nhầm làm ăng-ten quay khỏi Trái Đất','Bị bão cát chôn vùi','Bị thiên thạch rơi trúng','Hết nhiên liệu tên lửa'], en:['A mistaken command pointed its antenna away from Earth','A sandstorm buried it','A meteorite hit it','It ran out of rocket fuel']},
+  ex:{vi:'Lệnh cập nhật phần mềm pin đã vô tình ghi đè lên dữ liệu điều khiển hướng ăng-ten. Đó là lý do bạn vừa phải căn ăng-ten về Trái Đất!', en:'A battery-software update accidentally overwrote the antenna-pointing data. That\u2019s why you just had to aim it back at Earth!'}}},
+
+{id:'viking2', planet:'mars', kind:'lander', mini:'circuit', lat:47.64, lon:134.29, date:'1976-09-03', dateKind:'landed',
+ name:'Viking 2',
+ site:{vi:'Đồng bằng Utopia (Utopia Planitia)', en:'Utopia Planitia'},
+ mission:{vi:'Tàu đổ bộ thứ hai của chương trình Viking.', en:'The second lander of the Viking programme.'},
+ ended:{vi:'Ngừng hoạt động ngày 11/04/1980 do hỏng pin.', en:'Stopped working on Apr 11, 1980, after a battery failure.'},
+ facts:{vi:['Chụp được lớp sương giá mỏng phủ trên mặt đất vào mùa đông Sao Hỏa.','Mang theo máy đo địa chấn để thử "lắng nghe" Sao Hỏa.','Hoạt động hơn 3,5 năm ở vùng đồng bằng phía bắc.'],
+        en:['It photographed thin frost on the ground during the Martian winter.','It carried a seismometer to try to "listen" to Mars.','It worked for more than 3.5 years on the northern plains.']},
+ voice:{vi:'Mùa đông ở Utopia, tôi đã chụp được lớp sương giá mỏng phủ trên những hòn đá đỏ.', en:'In the Utopia winter, I photographed thin frost on the red rocks.'},
+ quiz:{q:{vi:'Viking 2 đã chụp được hiện tượng gì trên mặt đất Sao Hỏa vào mùa đông?', en:'What did Viking 2 photograph on the ground in the Martian winter?'},
+  o:{vi:['Lớp sương giá mỏng','Mưa rào','Cầu vồng','Hồ nước'], en:['Thin frost','A rain shower','A rainbow','A lake']},
+  ex:{vi:'Lớp sương giá rất mỏng bám trên đá và đất ở đồng bằng Utopia, cho thấy nước vẫn tồn tại trên Sao Hỏa dưới dạng băng và hơi.', en:'A very thin frost coated the rocks and soil, showing that water still exists on Mars as ice and vapour.'}}},
+
+{id:'pathfinder', planet:'mars', kind:'rover', mini:'antenna', lat:19.13, lon:-33.22, date:'1997-07-04', dateKind:'landed',
+ name:'Mars Pathfinder & Sojourner',
+ site:{vi:'Thung lũng Ares (Ares Vallis)', en:'Ares Vallis'},
+ mission:{vi:'Trạm đổ bộ và chiếc xe tự hành đầu tiên lăn bánh trên Sao Hỏa.', en:'A lander and the first rover to roll across Mars.'},
+ ended:{vi:'Liên lạc lần cuối ngày 27/09/1997.', en:'Last contact on Sep 27, 1997.'},
+ facts:{vi:['Hạ cánh bằng cách nảy trên những túi khí khổng lồ, bật lên nhiều lần rồi mới dừng.','Xe Sojourner chỉ nặng khoảng 11 kg, nhỏ cỡ một chiếc lò vi sóng, đã phân tích hóa học nhiều tảng đá.','Trạm đổ bộ được đặt tên là Trạm Tưởng niệm Carl Sagan.'],
+        en:['It landed by bouncing on giant airbags, many times, before rolling to a stop.','The Sojourner rover weighed only about 11 kg – the size of a microwave oven – and analysed many rocks.','The lander was renamed the Carl Sagan Memorial Station.']},
+ voice:{vi:'Tôi là Sojourner, chiếc xe đầu tiên lăn bánh trên hành tinh khác. Nhỏ thôi, nhưng gan dạ!', en:'I am Sojourner, the first rover to roll on another planet. Small, but brave!'},
+ quiz:{q:{vi:'Mars Pathfinder đã hạ cánh xuống Sao Hỏa bằng cách nào?', en:'How did Mars Pathfinder land on Mars?'},
+  o:{vi:['Nảy trên những túi khí khổng lồ','Hạ cánh trên đường băng như máy bay','Đáp xuống mặt nước','Bám vào một sợi dây từ khinh khí cầu'], en:['Bouncing on giant airbags','On a runway, like a plane','Splashing down in water','Hanging from a balloon']},
+  ex:{vi:'Túi khí bao quanh tàu giúp nó nảy trên mặt đất nhiều lần trước khi lăn và dừng lại an toàn.', en:'Airbags wrapped around the lander let it bounce repeatedly before rolling safely to a stop.'}}},
+
+{id:'spirit', planet:'mars', kind:'rover', mini:'dust', dust:'solar', lat:-14.57, lon:175.47, date:'2004-01-04', dateKind:'landed',
+ name:'Spirit (MER-A)',
+ site:{vi:'Hố Gusev', en:'Gusev crater'},
+ mission:{vi:'Xe tự hành song sinh của Opportunity.', en:'Opportunity\u2019s twin rover.'},
+ ended:{vi:'Liên lạc lần cuối ngày 22/03/2010.', en:'Last contact on Mar 22, 2010.'},
+ facts:{vi:['Được thiết kế để làm việc 90 ngày Sao Hỏa, nhưng đã hoạt động hơn 6 năm.','Bánh xe hỏng bị kéo lê đã cào lộ ra lớp đất gần như toàn silica – dấu vết của suối nước nóng cổ đại.','Năm 2009 nó mắc kẹt trong cát mềm và không thể nghiêng tấm pin về phía Mặt Trời để qua mùa đông.'],
+        en:['Designed for 90 Martian days, it worked for more than 6 years.','Its broken, dragging wheel scraped up almost pure silica – a trace of ancient hot springs.','In 2009 it got stuck in soft sand and could not tilt its panels to the Sun for winter.']},
+ voice:{vi:'Đôi khi những cơn lốc bụi đi ngang qua và thổi sạch tấm pin cho tôi – những người bạn tốt bụng của Sao Hỏa.', en:'Sometimes dust devils passed by and blew my solar panels clean – the kind friends of Mars.'},
+ quiz:{q:{vi:'Điều gì bất ngờ đã giúp Spirit phát hiện ra đất gần như toàn silica?', en:'What unexpectedly helped Spirit discover almost pure silica?'},
+  o:{vi:['Bánh xe hỏng bị kéo lê, cào lộ lớp đất bên dưới','Một trận động đất làm nứt mặt đất','Một trận mưa rửa trôi lớp bụi','Một thiên thạch rơi gần đó'], en:['A broken wheel dragging and scraping the soil','A quake cracking the ground','Rain washing the dust away','A nearby meteorite strike']},
+  ex:{vi:'Silica tinh khiết thường hình thành nơi có nước nóng như suối nước nóng – dấu hiệu Sao Hỏa từng có môi trường có thể phù hợp cho vi sinh vật.', en:'Pure silica usually forms where hot water flows, like hot springs – a sign Mars once had places that might have suited microbes.'}}},
+
+{id:'opportunity', planet:'mars', kind:'rover', mini:'dust', dust:'solar', lat:-1.948, lon:-5.526, date:'2004-01-25', dateKind:'landed',
+ name:'Opportunity (Oppy)',
+ site:{vi:'Thung lũng Perseverance, rìa hố Endeavour', en:'Perseverance Valley, rim of Endeavour crater'},
+ mission:{vi:'Xe tự hành sống lâu và đi xa nhất của chương trình Mars Exploration Rover.', en:'The longest-lived, farthest-driving Mars Exploration Rover.'},
+ ended:{vi:'Liên lạc lần cuối ngày 10/06/2018, giữa một cơn bão bụi phủ khắp hành tinh.', en:'Last contact on Jun 10, 2018, during a planet-wide dust storm.'},
+ facts:{vi:['Được thiết kế cho 90 ngày và khoảng 1 km đường đi – nhưng đã làm việc gần 15 năm và đi 45,16 km, dài hơn một đường chạy marathon.','Tìm thấy những viên hematit nhỏ gọi là "quả việt quất" – bằng chứng Sao Hỏa từng có nước.','NASA tuyên bố kết thúc sứ mệnh ngày 13/02/2019, sau hơn 1.000 lệnh gọi không được hồi đáp.'],
+        en:['Built for 90 days and about 1 km of driving, it worked for nearly 15 years and covered 45.16 km – farther than a marathon.','It found tiny hematite spheres nicknamed "blueberries" – evidence that Mars once had water.','NASA declared the mission over on Feb 13, 2019, after more than 1,000 unanswered calls.']},
+ voice:{vi:'...My battery is low... and it\u2019s getting dark...', en:'...My battery is low... and it\u2019s getting dark...'},
+ quiz:{q:{vi:'Opportunity được thiết kế để hoạt động 90 ngày Sao Hỏa. Thực tế nó đã hoạt động bao lâu?', en:'Opportunity was designed for 90 Martian days. How long did it actually work?'},
+  o:{vi:['Gần 15 năm','Đúng 90 ngày','Khoảng 1 năm','Khoảng 6 tháng'], en:['Nearly 15 years','Exactly 90 days','About 1 year','About 6 months']},
+  ex:{vi:'Từ 2004 đến 2018, Oppy đi được 45,16 km và đã lập kỷ lục quãng đường lái xe ngoài Trái Đất.', en:'From 2004 to 2018 Oppy drove 45.16 km and set the record for driving distance beyond Earth.'}}},
+
+{id:'phoenix', planet:'mars', kind:'lander', mini:'circuit', lat:68.22, lon:-125.75, date:'2008-05-25', dateKind:'landed',
+ name:'Phoenix',
+ site:{vi:'Đồng bằng phương Bắc (Vastitas Borealis)', en:'Vastitas Borealis, the northern plains'},
+ mission:{vi:'Tàu đổ bộ tìm nước ở vùng gần cực Bắc Sao Hỏa.', en:'A lander that hunted for water near Mars\u2019s north pole.'},
+ ended:{vi:'Liên lạc lần cuối ngày 02/11/2008.', en:'Last contact on Nov 2, 2008.'},
+ facts:{vi:['Cánh tay robot đào rãnh và tìm thấy băng nước ngay dưới lớp đất mặt.','Quan sát được tuyết rơi từ những đám mây – tuyết bốc hơi trước khi chạm đất.','Mùa đông khắc nghiệt và lớp băng CO₂ đã làm gãy tấm pin mặt trời của nó.'],
+        en:['Its robotic arm dug trenches and found water ice just below the surface.','It watched snow falling from clouds – snow that vanished before reaching the ground.','The harsh winter and CO₂ ice broke its solar panels.']},
+ voice:{vi:'Tôi đã chạm vào băng của Sao Hỏa bằng chính cánh tay mình. Rồi mùa đông đến, và băng phủ lên tôi...', en:'I touched Martian ice with my own arm. Then winter came, and the ice covered me...'},
+ quiz:{q:{vi:'Làm sao Phoenix biết những mảng trắng trong rãnh đào là băng nước?', en:'How did Phoenix know the white patches in its trench were water ice?'},
+  o:{vi:['Chúng biến mất dần sau vài ngày vì thăng hoa','Chúng phát ra tiếng nước chảy','Chúng có mùi muối biển','Chúng tan thành vũng nước lớn'], en:['They slowly vanished over a few days','They made a trickling sound','They smelled of sea salt','They melted into a big puddle']},
+  ex:{vi:'Những mảng trắng nhỏ dần rồi biến mất – băng chuyển thẳng thành hơi trong không khí loãng của Sao Hỏa (thăng hoa). Muối thì không biến mất như vậy.', en:'The patches shrank and disappeared – ice turns straight into vapour in Mars\u2019s thin air (sublimation). Salt would not do that.'}}},
+
+{id:'insight', planet:'mars', kind:'lander', mini:'dust', dust:'solar', lat:4.502, lon:135.623, date:'2018-11-26', dateKind:'landed',
+ name:'InSight',
+ site:{vi:'Đồng bằng Elysium (Elysium Planitia)', en:'Elysium Planitia'},
+ mission:{vi:'Trạm nghiên cứu cấu trúc bên trong Sao Hỏa.', en:'A station built to study the inside of Mars.'},
+ ended:{vi:'Liên lạc lần cuối ngày 15/12/2022.', en:'Last contact on Dec 15, 2022.'},
+ facts:{vi:['Máy đo địa chấn SEIS phát hiện hơn 1.300 trận động đất Sao Hỏa.','Nhờ sóng địa chấn, các nhà khoa học đo được kích thước lõi kim loại lỏng của Sao Hỏa.','Bụi phủ dần lên tấm pin cho đến khi nó không còn đủ năng lượng để hoạt động.'],
+        en:['Its SEIS seismometer detected more than 1,300 marsquakes.','Seismic waves let scientists measure the size of Mars\u2019s liquid metal core.','Dust slowly covered its solar panels until it no longer had enough power.']},
+ voice:{vi:'Năng lượng của tôi rất thấp... đây có thể là bức ảnh cuối cùng tôi gửi được.', en:'My power is really low... this may be the last image I can send.'},
+ quiz:{q:{vi:'Máy đo địa chấn của InSight đã "nghe" được gì bên trong Sao Hỏa?', en:'What did InSight\u2019s seismometer "hear" inside Mars?'},
+  o:{vi:['Hơn 1.300 trận động đất Sao Hỏa','Tiếng gió trong lòng đất','Dòng nước ngầm chảy','Tiếng núi lửa phun trào'], en:['More than 1,300 marsquakes','Wind underground','Flowing groundwater','Erupting volcanoes']},
+  ex:{vi:'Sóng địa chấn đi xuyên qua hành tinh, giúp các nhà khoa học "nhìn" thấy lớp vỏ, lớp phủ và lõi của Sao Hỏa.', en:'Seismic waves travel through the planet, letting scientists "see" Mars\u2019s crust, mantle and core.'}}},
+
+{id:'ingenuity', planet:'mars', kind:'heli', mini:'circuit', lat:18.45, lon:77.42, date:'2021-02-18', dateKind:'landed',
+ name:'Ingenuity',
+ site:{vi:'Hố Jezero', en:'Jezero crater'},
+ mission:{vi:'Trực thăng đầu tiên bay có điều khiển trên một hành tinh khác.', en:'The first helicopter to make a controlled flight on another planet.'},
+ ended:{vi:'Chuyến bay cuối cùng ngày 18/01/2024; cánh quạt bị hỏng nên không thể bay tiếp.', en:'Final flight on Jan 18, 2024; damaged rotor blades grounded it.'},
+ facts:{vi:['Ngày 19/04/2021, nó thực hiện chuyến bay có động cơ, có điều khiển đầu tiên trên một hành tinh khác.','Được lên kế hoạch bay 5 lần, nhưng đã bay 72 lần, tổng cộng hơn 17 km.','Nó mang theo một mảnh vải nhỏ từ máy bay Wright Flyer của anh em nhà Wright.'],
+        en:['On Apr 19, 2021, it made the first powered, controlled flight on another planet.','Planned for 5 flights, it flew 72 times, covering more than 17 km.','It carries a small piece of fabric from the Wright brothers\u2019 Wright Flyer.']},
+ voice:{vi:'Người ta chỉ mong tôi bay 5 lần. Tôi đã bay 72 lần!', en:'They only hoped I would fly 5 times. I flew 72!'},
+ quiz:{q:{vi:'Ingenuity mang theo một mảnh vải nhỏ từ chiếc máy bay nổi tiếng nào?', en:'Ingenuity carries a scrap of fabric from which famous aircraft?'},
+  o:{vi:['Wright Flyer của anh em nhà Wright','Máy bay Concorde','Máy bay Boeing 747','Khinh khí cầu Montgolfier'], en:['The Wright brothers\u2019 Wright Flyer','Concorde','A Boeing 747','The Montgolfier balloon']},
+  ex:{vi:'Wright Flyer là chiếc máy bay có động cơ đầu tiên trên Trái Đất (1903); Ingenuity là chiếc đầu tiên trên một hành tinh khác.', en:'The Wright Flyer was the first powered aeroplane on Earth (1903); Ingenuity was the first on another planet.'}}},
+];
+
+const ACTIVE = [
+ {planet:'mars', name:'Curiosity', lat:-4.59, lon:137.44,
+  note:{vi:'Curiosity vẫn đang làm việc trong hố Gale từ năm 2012 – không cần cứu hộ! Perseverance cũng đang khám phá hố Jezero.', en:'Curiosity has been working in Gale crater since 2012 – no rescue needed! Perseverance is also exploring Jezero crater.'}}
+];
+
+// Simplified surface features at real coordinates (lat, lon east-positive, radius in degrees)
+const MOON_FEATURES = [
+ ['Imbrium',32.8,-15.6,17],['Serenitatis',28,17.5,9.5],['Tranquillitatis',8.5,31.4,11.5],['Crisium',17,59.1,7.5],
+ ['Fecunditatis',-7.8,51.3,9.5],['Nectaris',-15.2,35.5,5.5],['Nubium',-21.3,-16.6,10],['Cognitum',-10,-23.1,6],
+ ['Humorum',-24.4,-38.6,6],['P1',18,-57,19],['P2',2,-52,13],['P3',35,-50,11],['P4',-6,-38,8],['Insularum',7.5,-30.9,7],
+ ['F1',56,0,7],['F2',56,-25,6.5],['F3',57,25,6],['Vaporum',13.3,3.6,4.5],['Smythii',-1.3,87.3,5],['Marginis',13.3,86.1,4],
+ ['Moscoviense',27.3,147.9,4.5],['Orientale',-19.4,-92.8,4.5],['Australe',-38.9,93,6],['Ingenii',-33.7,163.5,3]
+];
+const MOON_LABELS = [
+ ['Mare Imbrium',32.8,-15.6],['Mare Serenitatis',28,17.5],['Mare Tranquillitatis',8.5,31.4],['Mare Crisium',17,59.1],
+ ['Mare Fecunditatis',-7.8,51.3],['Mare Nectaris',-15.2,35.5],['Mare Nubium',-21.3,-16.6],['Oceanus Procellarum',18,-57],
+ ['Mare Humorum',-24.4,-38.6],['Mare Frigoris',56,0],['Tycho',-43.31,-11.36],['Copernicus',9.62,-20.08],
+ ['Plato',51.6,-9.4],['Clavius',-58.4,-14.4],['Mare Moscoviense',27.3,147.9],['Mare Orientale',-19.4,-92.8],
+ ['South Pole–Aitken',-53,-169],['Cabeus',-84.9,-35.5]
+];
+const MARS_DARK = [
+ ['Syrtis',8.4,69.5,10],['Syrtis2',-2,75,8],['Acidalium',45,-30,12],['Meridiani',-2,0,6],['Sabaeus',-8,20,12],
+ ['Erythraeum',-25,-40,14],['Cimmerium',-20,145,14],['Tyrrhenum',-20,105,12],['Sirenum',-30,-150,14],
+ ['Iapygia',-20,70,8],['Margaritifer',-10,-25,7],['Utopia',48,118,13]
+];
+const MARS_BRIGHT = [['Hellas',-42.4,70.5,18],['Argyre',-49.7,-43.4,9],['Arabia',20,20,15],['Tharsis',5,-110,22],['Amazonis',15,-160,12],['ElysiumR',25,147,7]];
+const MARS_LABELS = [
+ ['Olympus Mons',18.65,-133.8],['Valles Marineris',-10,-70],['Hellas Planitia',-42.4,70.5],['Argyre Planitia',-49.7,-43.4],
+ ['Syrtis Major',8.4,69.5],['Utopia Planitia',47,120],['Chryse Planitia',24,-45],['Arabia Terra',20,20],
+ ['Tharsis Montes',0,-112],['Elysium Mons',24.8,146.9],['Gale',-5.37,137.81],['Jezero',18.38,77.58],['Gusev',-14.5,175.4],
+ ['Acidalia Planitia',45,-30],['Meridiani Planum',0,-3],['Planum Boreum',85,0],['Planum Australe',-84,0]
+];
+
+// ---------------- DEEP SPACE (sky chart: lat = Declination, lon = 180° − Right Ascension) ----------------
+const raLon=(h,m)=>180-(h*15+m*0.25);
+RELICS.push(
+{id:'voyager1', planet:'deep', kind:'probe', mini:'circuit', lat:12.0, lon:raLon(17,13), date:'1977-09-05', dateKind:'launch',
+ name:'Voyager 1',
+ site:{vi:'Không gian liên sao, hướng chòm Xà Phu (Ophiuchus)', en:'Interstellar space, toward Ophiuchus'},
+ au:{vi:'≈ 170 AU (khoảng 25 tỷ km)', en:'≈ 170 AU (about 25 billion km)'},
+ mission:{vi:'Vật thể nhân tạo xa Trái Đất nhất – tàu đầu tiên đi vào không gian giữa các vì sao.', en:'The most distant human-made object – the first craft to reach interstellar space.'},
+ ended:{vi:'Vẫn gửi tín hiệu yếu ớt về Trái Đất; các thiết bị đang được tắt dần để tiết kiệm năng lượng.', en:'Still sending a faint signal; instruments are being switched off one by one to save power.'},
+ facts:{vi:['Bay ngang Sao Mộc (1979) và Sao Thổ (1980), phát hiện núi lửa đang phun trên mặt trăng Io.','Ngày 14/02/1990, nó quay lại chụp bức ảnh "Chấm Xanh Nhạt" – Trái Đất chỉ là một chấm sáng nhỏ xíu.','Ngày 25/08/2012, nó vượt ranh giới nhật quyển, trở thành vật thể đầu tiên của con người vào không gian liên sao – mang theo Đĩa Vàng chứa âm thanh và hình ảnh Trái Đất.'],
+        en:['It flew past Jupiter (1979) and Saturn (1980) and discovered erupting volcanoes on the moon Io.','On Feb 14, 1990, it turned around to take the "Pale Blue Dot" picture – Earth as a tiny speck of light.','On Aug 25, 2012, it crossed the heliopause into interstellar space, carrying the Golden Record of Earth\u2019s sounds and images.']},
+ voice:{vi:'Năm 2023, một con chip bộ nhớ của tôi hỏng và tôi chỉ gửi về những dữ liệu vô nghĩa. Các kỹ sư đã chuyển chương trình sang chỗ khác – từ cách xa hơn 24 tỷ km.', en:'In 2023 one of my memory chips failed and I sent home only gibberish. Engineers moved my code somewhere else – from more than 24 billion km away.'},
+ quiz:{q:{vi:'Năm 1990, Voyager 1 đã quay lại chụp bức ảnh nổi tiếng nào?', en:'What famous picture did Voyager 1 turn around to take in 1990?'},
+  o:{vi:['"Chấm Xanh Nhạt" – Trái Đất nhìn từ rất xa','Mặt Trời mọc trên Sao Hỏa','Hố đen đầu tiên','Mặt sau của Mặt Trăng'], en:['The "Pale Blue Dot" – Earth from far away','Sunrise on Mars','The first black hole','The far side of the Moon']},
+  ex:{vi:'Từ khoảng 6 tỷ km, Trái Đất chỉ chiếm chưa tới một điểm ảnh. Nhà thiên văn Carl Sagan gọi đó là "ngôi nhà duy nhất chúng ta từng biết".', en:'From about 6 billion km away, Earth filled less than one pixel. Astronomer Carl Sagan called it "the only home we\u2019ve ever known".'}}},
+
+{id:'voyager2', planet:'deep', kind:'probe', mini:'antenna', lat:-58, lon:raLon(20,5), date:'1977-08-20', dateKind:'launch',
+ name:'Voyager 2',
+ site:{vi:'Không gian liên sao, hướng chòm Khổng Tước (Pavo)', en:'Interstellar space, toward Pavo'},
+ au:{vi:'≈ 145 AU (khoảng 21 tỷ km)', en:'≈ 145 AU (about 21 billion km)'},
+ mission:{vi:'Tàu duy nhất từng ghé thăm cả bốn hành tinh khí khổng lồ.', en:'The only spacecraft to visit all four giant planets.'},
+ ended:{vi:'Vẫn liên lạc được; năm 2023 từng mất tín hiệu vài tuần vì ăng-ten lệch 2 độ.', en:'Still in contact; in 2023 it went silent for weeks after its antenna drifted 2 degrees.'},
+ facts:{vi:['Được phóng ngày 20/08/1977 – trước cả Voyager 1.','Là tàu duy nhất bay ngang Sao Thiên Vương (1986) và Sao Hải Vương (1989).','Vượt ranh giới nhật quyển ngày 05/11/2018, trở thành vật thể thứ hai của con người vào không gian liên sao.'],
+        en:['It launched on Aug 20, 1977 – before Voyager 1.','It is the only spacecraft to fly past Uranus (1986) and Neptune (1989).','It crossed the heliopause on Nov 5, 2018, the second human-made object in interstellar space.']},
+ voice:{vi:'Năm 2023, ăng-ten của tôi lệch 2 độ – và Trái Đất im bặt. Rồi một tiếng "hét" từ trạm Canberra đã tìm thấy tôi.', en:'In 2023 my antenna drifted 2 degrees – and Earth went silent. Then a "shout" from the Canberra station found me.'},
+ quiz:{q:{vi:'Voyager 2 là tàu duy nhất đã bay ngang qua hai hành tinh nào?', en:'Voyager 2 is the only spacecraft to have flown past which two planets?'},
+  o:{vi:['Sao Thiên Vương và Sao Hải Vương','Sao Kim và Sao Thủy','Sao Hỏa và Sao Mộc','Sao Thổ và Sao Kim'], en:['Uranus and Neptune','Venus and Mercury','Mars and Jupiter','Saturn and Venus']},
+  ex:{vi:'Mọi hình ảnh cận cảnh của Sao Thiên Vương và Sao Hải Vương mà chúng ta có đến nay đều do Voyager 2 chụp.', en:'Every close-up image we have of Uranus and Neptune was taken by Voyager 2.'}}},
+
+{id:'pioneer10', planet:'deep', kind:'probe', mini:'antenna', lat:26, lon:raLon(5,14), date:'1972-03-03', dateKind:'launch',
+ name:'Pioneer 10',
+ site:{vi:'Hướng chòm Kim Ngưu (Taurus), về phía sao Aldebaran', en:'Toward Taurus and the star Aldebaran'},
+ au:{vi:'≈ 140 AU (khoảng 21 tỷ km)', en:'≈ 140 AU (about 21 billion km)'},
+ mission:{vi:'Tàu đầu tiên vượt qua vành đai tiểu hành tinh và bay ngang Sao Mộc.', en:'The first craft to cross the asteroid belt and fly past Jupiter.'},
+ ended:{vi:'Tín hiệu yếu cuối cùng nhận được ngày 23/01/2003.', en:'Its last faint signal was received on Jan 23, 2003.'},
+ facts:{vi:['Tháng 12/1973, nó trở thành tàu đầu tiên chụp ảnh cận cảnh Sao Mộc.','Mang theo Tấm bảng Pioneer khắc hình một người đàn ông, một người phụ nữ và bản đồ chỉ vị trí Mặt Trời.','Nó đang bay về phía sao Aldebaran và sẽ mất khoảng 2 triệu năm để đi ngang qua ngôi sao này.'],
+        en:['In December 1973 it became the first spacecraft to photograph Jupiter up close.','It carries the Pioneer plaque, showing a man, a woman and a map to our Sun.','It is heading toward Aldebaran and will take about 2 million years to pass it.']},
+ voice:{vi:'Tín hiệu cuối cùng của tôi yếu đến mức những ăng-ten lớn nhất Trái Đất cũng gần như không nghe thấy...', en:'My last signal was so faint that Earth\u2019s biggest antennas could barely hear it...'},
+ quiz:{q:{vi:'Pioneer 10 mang theo vật gì để giới thiệu về loài người?', en:'What does Pioneer 10 carry to introduce humanity?'},
+  o:{vi:['Tấm bảng khắc hình người và vị trí Mặt Trời','Đĩa Vàng chứa âm nhạc','Một lá cờ','Hạt giống cây'], en:['A plaque showing people and the Sun\u2019s location','A Golden Record of music','A flag','Plant seeds']},
+  ex:{vi:'Tấm bảng Pioneer bằng nhôm mạ vàng. Đĩa Vàng có âm nhạc là của hai tàu Voyager, được phóng sau đó 5 năm.', en:'The Pioneer plaque is gold-anodised aluminium. The Golden Record with music belongs to the Voyagers, launched five years later.'}}},
+
+{id:'pioneer11', planet:'deep', kind:'probe', mini:'circuit', lat:-8, lon:raLon(18,50), date:'1973-04-06', dateKind:'launch',
+ name:'Pioneer 11',
+ site:{vi:'Hướng chòm Thiên Ưng (Aquila)', en:'Toward Aquila'},
+ au:{vi:'≈ 117 AU (khoảng 17 tỷ km)', en:'≈ 117 AU (about 17 billion km)'},
+ mission:{vi:'Tàu đầu tiên bay ngang Sao Thổ.', en:'The first spacecraft to fly past Saturn.'},
+ ended:{vi:'Liên lạc lần cuối năm 1995, khi nguồn điện hạt nhân đã quá yếu.', en:'Last contact in 1995, when its nuclear power source had grown too weak.'},
+ facts:{vi:['Bay ngang Sao Mộc năm 1974, rồi tận dụng lực hấp dẫn của Sao Mộc để đi tới Sao Thổ.','Tháng 9/1979, nó là tàu đầu tiên bay ngang Sao Thổ và phát hiện vành đai F.','Nó cũng mang theo Tấm bảng Pioneer giống Pioneer 10.'],
+        en:['It passed Jupiter in 1974, then used Jupiter\u2019s gravity to swing toward Saturn.','In September 1979 it became the first craft to fly past Saturn, discovering its F ring.','It carries the same Pioneer plaque as Pioneer 10.']},
+ voice:{vi:'Tôi là vị khách đầu tiên ghé thăm Sao Thổ. Những vành đai ấy đẹp hơn mọi bức ảnh chụp từ Trái Đất...', en:'I was Saturn\u2019s very first visitor. Those rings were more beautiful than any picture taken from Earth...'},
+ quiz:{q:{vi:'Pioneer 11 là tàu vũ trụ đầu tiên bay ngang qua hành tinh nào?', en:'Pioneer 11 was the first spacecraft to fly past which planet?'},
+  o:{vi:['Sao Thổ','Sao Hỏa','Sao Kim','Sao Hải Vương'], en:['Saturn','Mars','Venus','Neptune']},
+  ex:{vi:'Dữ liệu của Pioneer 11 giúp các kỹ sư lên kế hoạch cho hai tàu Voyager bay qua Sao Thổ một cách an toàn.', en:'Pioneer 11\u2019s data helped engineers plan the Voyagers\u2019 safe passage past Saturn.'}}}
+);
+ACTIVE.push({planet:'deep', name:'New Horizons', lat:-20, lon:raLon(19,5),
+ note:{vi:'New Horizons vẫn đang hoạt động sau khi bay ngang Sao Diêm Vương (2015) và Arrokoth (2019) – không cần cứu hộ!', en:'New Horizons is still active after flying past Pluto (2015) and Arrokoth (2019) – no rescue needed!'}});
+
+// Bright stars [name, RA h, RA m, Dec, magnitude]
+const STARS=[['Sirius',6,45,-16.7,-1.46],['Canopus',6,24,-52.7,-.74],['Arcturus',14,16,19.2,-.05],['Vega',18,37,38.8,.03],['Capella',5,17,46,.08],['Rigel',5,14.5,-8.2,.13],
+ ['Procyon',7,39,5.2,.34],['Betelgeuse',5,55,7.4,.5],['Achernar',1,38,-57.2,.46],['Altair',19,51,8.9,.77],['Aldebaran',4,36,16.5,.85],['Antares',16,29,-26.4,.96],
+ ['Spica',13,25,-11.2,.97],['Pollux',7,45,28,1.14],['Fomalhaut',22,58,-29.6,1.16],['Deneb',20,41,45.3,1.25],['Regulus',10,8,12,1.35],['Acrux',12,27,-63.1,.76],
+ ['Polaris',2,32,89.3,1.98],['Rasalhague',17,35,12.6,2.07],['Peacock',20,26,-56.7,1.94],['Bellatrix',5,25,6.3,1.64],['Alnilam',5,36,-1.2,1.69],['Alnitak',5,41,-1.9,1.77],
+ ['Mintaka',5,32,-.3,2.23],['Saiph',5,48,-9.7,2.09],['Dubhe',11,4,61.75,1.8],['Merak',11,2,56.4,2.3],['Phecda',11,54,53.7,2.4],['Megrez',12,15,57,3.3],['Alioth',12,54,55.96,1.8],
+ ['Mizar',13,24,54.9,2.2],['Alkaid',13,48,49.3,1.9],['Kaus Australis',18,24,-34.4,1.85],['Nunki',18,55,-26.3,2.05],['Shaula',17,34,-37.1,1.62],['Hadar',14,4,-60.4,.61],
+ ['Rigil Kentaurus',14,40,-60.8,-.27],['Elnath',5,26,28.6,1.65],['Castor',7,35,31.9,1.58],['Mimosa',12,48,-59.7,1.25],['Gacrux',12,31,-57.1,1.6],['Tarazed',19,46,10.6,2.7]];
+const STAR_LINES=[['Betelgeuse','Bellatrix'],['Bellatrix','Mintaka'],['Betelgeuse','Alnitak'],['Mintaka','Alnilam'],['Alnilam','Alnitak'],['Alnitak','Saiph'],['Mintaka','Rigel'],
+ ['Dubhe','Merak'],['Merak','Phecda'],['Phecda','Megrez'],['Megrez','Dubhe'],['Megrez','Alioth'],['Alioth','Mizar'],['Mizar','Alkaid'],['Acrux','Gacrux'],
+ ['Vega','Deneb'],['Deneb','Altair'],['Altair','Vega'],['Tarazed','Altair'],['Aldebaran','Elnath'],['Castor','Pollux'],['Hadar','Rigil Kentaurus']];
+const DEEP_LABELS=[['Ophiuchus',2,raLon(17,25)],['Pavo',-66,raLon(19,40)],['Taurus',22,raLon(4,5)],['Aquila',2,raLon(19,40)],['Orion',-14,raLon(5,30)],
+ ['Sagittarius',-30,raLon(19,15)],['Ursa Major',64,raLon(11,40)],['Crux',-66,raLon(12,30)],['Scorpius',-33,raLon(16,40)],['Gemini',24,raLon(7,10)],
+ ...STARS.filter(s=>s[4]<1.3||['Polaris','Rasalhague','Peacock'].includes(s[0])).map(s=>[s[0],s[3]-2.4,raLon(s[1],s[2])])];
+
+// ===== I18N =====
+const T = {
+ vi:{
+  subtitle:'Biên Niên Ký Di Tích Vũ Trụ',
+  story:'Bạn là Robot Cứu hộ Di sản đến từ tương lai. Trên Mặt Trăng, Sao Hỏa và ngoài không gian sâu, những cỗ máy con người gửi đi đã hoàn thành sứ mệnh và nằm lại trong im lặng. Hãy tìm chúng theo tọa độ thật, làm sạch, sửa chữa, kết nối lại với Trái Đất – và thắp sáng chúng trên Bản đồ Di sản.',
+  start:'Bắt đầu nhiệm vụ', cont:'Tiếp tục nhiệm vụ', challenge:'NASA Space Apps Challenge – Abandoned but not Forgotten',
+  choose:'Chọn nơi hạ cánh', back:'Quay lại',
+  moon:'Mặt Trăng', mars:'Sao Hỏa', deep:'Không gian sâu',
+  deepDesc:'Bầu trời sao: lần theo hướng bay thật của Pioneer và Voyager – những cỗ máy đang rời khỏi Hệ Mặt Trời.',
+  distSun:'Cách Mặt Trời (ước tính 2026)', launched:'Phóng', earthSun:'Trái Đất & Mặt Trời', skyHint:'Bản đồ bầu trời: tọa độ là xích kinh (RA) và xích vĩ (Dec) – hướng bay thật của từng con tàu.',
+  moonDesc:'Nơi có nhiều di tích nhất: tàu Ranger, chuỗi Surveyor, các điểm hạ cánh Apollo và hố va chạm LCROSS.',
+  marsDesc:'Những tàu đổ bộ, xe tự hành và chiếc trực thăng đã ngừng hoạt động trên hành tinh đỏ.',
+  landOn:'Hạ cánh xuống {p}', progress:'{n}/{t} di tích đã phục hồi',
+  nearest:'Tín hiệu gần nhất', allLit:'Mọi di tích ở đây đã sáng', scan:'Quét {name}', viewFile:'Xem hồ sơ {name}',
+  heritage:'Bản đồ Di sản', log:'Nhật ký', sources:'Nguồn dữ liệu', planetSwitch:'Đổi hành tinh', menu:'Menu',
+  tut:'Chạm hoặc giữ trên bản đồ để lái robot. Đi theo mũi tên tín hiệu để tìm di tích.',
+  sysLog:'SYSTEM LOG', robot:'RECOVERY ROBOT', sysAlert:'SYSTEM ALERT', sysOk:'SYSTEM CONFIRMATION',
+  detect:'[Tọa độ thực tế: {c} – {site}]. Phát hiện tín hiệu mờ nhạt từ thực thể: {name}.',
+  r_dust:'Phát hiện lớp bụi dày bao phủ bề mặt thiết bị. Bắt đầu giao thức làm sạch di sản.',
+  r_antenna:'Thiết bị đã mất hướng về Trái Đất. Bắt đầu giao thức căn chỉnh ăng-ten.',
+  r_circuit:'Mạch điều khiển bị đứt. Bắt đầu giao thức sửa mạch logic.',
+  mission:'Sứ mệnh', site:'Vị trí', coords:'Tọa độ thật', landed:'Hạ cánh', impact:'Va chạm', status:'Trạng thái cuối', science:'Khám phá khoa học',
+  begin:'Bắt đầu phục hồi', close:'Đóng', next:'Tiếp tục', restoredTag:'Đã phục hồi', waitingTag:'Đang chờ cứu hộ',
+  m_dust:'Làm sạch bụi', i_dust:'Vuốt liên tục trên màn hình để lau sạch lớp bụi.', solar:'Tấm pin mặt trời', radiator:'Bộ tản nhiệt pin của xe', clean:'Độ sạch',
+  m_antenna:'Căn hướng về Trái Đất', i_antenna:'Kéo trên khung hình (hoặc dùng nút mũi tên) để xoay ăng-ten. Khi tín hiệu mạnh nhất, giữ yên để khóa sóng.', signal:'Cường độ tín hiệu', locking:'Đang khóa sóng...', locked:'Đã khóa sóng Trái Đất', earth:'Trái Đất',
+  m_circuit:'Sửa mạch logic', i_circuit:'Bật hoặc tắt các công tắc A–D để đèn đầu ra sáng lên. Mỗi cổng logic có luật riêng:',
+  g_AND:'AND (VÀ): sáng khi cả hai đầu vào đều sáng', g_OR:'OR (HOẶC): sáng khi ít nhất một đầu vào sáng', g_XOR:'XOR (HOẶC LOẠI TRỪ): sáng khi đúng một đầu vào sáng', g_NOT:'NOT (ĐẢO): đảo ngược tín hiệu',
+  out:'Đầu ra',
+  a_dust:'Độ sạch tấm pin: 100%. Nguồn điện khôi phục: 15%. Khởi động lại phân vùng bộ nhớ trung tâm...',
+  a_antenna:'Ăng-ten đã khóa hướng Trái Đất. Đường truyền ổn định. Khởi động lại phân vùng bộ nhớ trung tâm...',
+  a_circuit:'Mạch logic đã thông. Nguồn điện khôi phục: 15%. Khởi động lại phân vùng bộ nhớ trung tâm...',
+  quizT:'Khôi phục bộ nhớ trung tâm', quizI:'Chọn đáp án đúng để giải mã dữ liệu lịch sử.', wrong:'Dữ liệu chưa khớp. Thử đáp án khác.', right:'Dữ liệu đã khớp!',
+  greet:'Chào {name}, chúng tôi đã nhận được tín hiệu của bạn. Dữ liệu của bạn đã được kết nối về Trái Đất.',
+  oppyGreet:'Chào Oppy, chúng tôi nhận được tín hiệu của bạn. Trời sẽ không tối nữa đâu. Bạn đã an toàn, hệ thống dữ liệu của bạn đã được kết nối về Trái Đất.',
+  thanks:'Tín hiệu Trái Đất đã được thiết lập lại... Cảm ơn bạn đã tìm thấy tôi. Tôi sẵn sàng ghi danh vào Bản đồ Di sản.',
+  confirm:'Thực thể {name} đã được phục hồi thành công. Trạng thái: Không bao giờ bị lãng quên.',
+  oppyNote:'Ghi chú khoa học: "Pin của tôi yếu... và trời đang tối dần..." Opportunity không thực sự nói câu này. Đây là cách một nhà báo diễn giải những dữ liệu cuối cùng nó gửi về: năng lượng rất thấp và bầu trời tối dần vì bão bụi.',
+  lightUp:'Thắp sáng trên Bản đồ Di sản', tapSkip:'Chạm để hiện nhanh',
+  ignited:'{name} đã sáng trên Bản đồ Di sản {p}.',
+  meaning:'Mỗi đốm sáng là một cỗ máy đã hoàn thành sứ mệnh và để lại tri thức cho nhân loại. Chúng bị bỏ lại, nhưng không bao giờ bị lãng quên.',
+  planetDone:'Mọi di tích trên {p} đã được thắp sáng!', goTo:'Đến {p}', explore:'Quay lại khám phá', finish:'Hoàn thành hành trình',
+  goHere:'Đi tới đây', heritageHint:'Chạm vào một đốm sáng để xem tên thiết bị.',
+  finalT:'Không bao giờ bị lãng quên',
+  finalP:'Bạn đã phục hồi và thắp sáng toàn bộ {n} di tích trên Mặt Trăng, Sao Hỏa và ngoài không gian sâu. Những cỗ máy này đã đưa con người đi xa hơn bao giờ hết – và nhờ bạn, câu chuyện của chúng sẽ tiếp tục được kể.',
+  replay:'Chơi lại từ đầu', reset:'Xóa tiến trình', resetQ:'Xóa toàn bộ tiến trình và bắt đầu lại?',
+  sound:'Âm thanh', lang:'English',
+  srcT:'Nguồn dữ liệu NASA',
+  srcP:'Thông tin sứ mệnh, ngày tháng và tọa độ trong game được tổng hợp từ các nguồn dữ liệu mở của NASA:',
+  srcNote:'Bản đồ trong game là bản vẽ đơn giản hóa theo phép chiếu kinh–vĩ độ. Vị trí các vùng biển, hố, núi lửa và di tích được đặt theo tọa độ thật; địa hình chi tiết là minh họa.',
+  activeNear:'Tín hiệu mạnh: {name} đang hoạt động',
+  km:'km', resumeHint:'Robot đã trở lại vị trí cũ.',
+ },
+ en:{
+  subtitle:'A heritage rescue mission on the Moon, Mars and beyond',
+  story:'You are a Heritage Recovery Robot from the future. On the Moon, on Mars and out in deep space, the machines humanity sent out have finished their missions and fallen silent. Find them at their real coordinates, clean them, repair them, reconnect them with Earth – and light them up on the Heritage Map.',
+  start:'Start mission', cont:'Continue mission', challenge:'NASA Space Apps Challenge – Abandoned but not Forgotten',
+  choose:'Choose a landing site', back:'Back',
+  moon:'The Moon', mars:'Mars', deep:'Deep Space',
+  deepDesc:'A star chart: follow the real headings of Pioneer and Voyager – machines leaving the Solar System.',
+  distSun:'Distance from the Sun (2026 est.)', launched:'Launched', earthSun:'Earth & Sun', skyHint:'Sky chart: coordinates are right ascension (RA) and declination (Dec) – each craft’s real direction of travel.',
+  moonDesc:'The richest site: the Ranger probe, the Surveyor series, Apollo landing sites and the LCROSS impact crater.',
+  marsDesc:'Landers, rovers and a helicopter that have gone quiet on the red planet.',
+  landOn:'Land on {p}', progress:'{n}/{t} relics restored',
+  nearest:'Nearest signal', allLit:'Every relic here is lit', scan:'Scan {name}', viewFile:'Open {name}\u2019s file',
+  heritage:'Heritage Map', log:'Logbook', sources:'Data sources', planetSwitch:'Change planet', menu:'Menu',
+  tut:'Tap or hold on the map to drive the robot. Follow the signal arrow to find relics.',
+  sysLog:'SYSTEM LOG', robot:'RECOVERY ROBOT', sysAlert:'SYSTEM ALERT', sysOk:'SYSTEM CONFIRMATION',
+  detect:'[Real coordinates: {c} – {site}]. Faint signal detected from entity: {name}.',
+  r_dust:'A thick dust layer covers the equipment. Starting heritage cleaning protocol.',
+  r_antenna:'The equipment has lost its bearing to Earth. Starting antenna alignment protocol.',
+  r_circuit:'The control circuit is broken. Starting logic repair protocol.',
+  mission:'Mission', site:'Location', coords:'Real coordinates', landed:'Landed', impact:'Impact', status:'Final status', science:'Science highlights',
+  begin:'Begin restoration', close:'Close', next:'Continue', restoredTag:'Restored', waitingTag:'Awaiting rescue',
+  m_dust:'Clean off the dust', i_dust:'Keep swiping across the screen to wipe the dust away.', solar:'Solar panel', radiator:'Rover battery radiator', clean:'Cleanliness',
+  m_antenna:'Point back to Earth', i_antenna:'Drag on the scene (or use the arrow buttons) to turn the antenna. Hold still at the strongest signal to lock on.', signal:'Signal strength', locking:'Locking on...', locked:'Earth signal locked', earth:'Earth',
+  m_circuit:'Repair the logic circuit', i_circuit:'Switch A–D on or off until the output lamp lights. Each logic gate has its own rule:',
+  g_AND:'AND: on when both inputs are on', g_OR:'OR: on when at least one input is on', g_XOR:'XOR: on when exactly one input is on', g_NOT:'NOT: flips the signal',
+  out:'Output',
+  a_dust:'Panel cleanliness: 100%. Power restored: 15%. Rebooting core memory partition...',
+  a_antenna:'Antenna locked on Earth. Link stable. Rebooting core memory partition...',
+  a_circuit:'Logic circuit closed. Power restored: 15%. Rebooting core memory partition...',
+  quizT:'Restore the core memory', quizI:'Pick the right answer to decode the historical data.', wrong:'Data mismatch. Try another answer.', right:'Data matched!',
+  greet:'Hello {name}, we received your signal. Your data is connected to Earth again.',
+  oppyGreet:'Hi Oppy, we got your signal. It won\u2019t be dark anymore. You\u2019re safe – your data is connected to Earth again.',
+  thanks:'Earth link re-established... Thank you for finding me. I am ready to join the Heritage Map.',
+  confirm:'Entity {name} successfully restored. Status: Never forgotten.',
+  oppyNote:'Science note: Opportunity never actually "said" this. A journalist poetically translated its final data – very low power and a sky darkening from the dust storm.',
+  lightUp:'Light it up on the Heritage Map', tapSkip:'Tap to skip',
+  ignited:'{name} now shines on the {p} Heritage Map.',
+  meaning:'Each light is a machine that finished its mission and left knowledge for all of us. Abandoned, but never forgotten.',
+  planetDone:'Every relic on {p} is now lit!', goTo:'Go to {p}', explore:'Back to exploring', finish:'Finish the journey',
+  goHere:'Go here', heritageHint:'Tap a light to see which machine it is.',
+  finalT:'Never forgotten',
+  finalP:'You restored and lit all {n} relics on the Moon, on Mars and in deep space. These machines carried humanity farther than ever before – and thanks to you, their stories keep being told.',
+  replay:'Play again from the start', reset:'Reset progress', resetQ:'Erase all progress and start over?',
+  sound:'Sound', lang:'Tiếng Việt',
+  srcT:'NASA data sources',
+  srcP:'Mission facts, dates and coordinates in this game were compiled from NASA\u2019s open data:',
+  srcNote:'The in-game maps are simplified drawings in a latitude–longitude projection. Seas, craters, volcanoes and relics sit at their real coordinates; fine terrain detail is illustrative.',
+  activeNear:'Strong signal: {name} is still active',
+  km:'km', resumeHint:'The robot is back where you left it.',
+ }
+};
+const SOURCES = [
+ ['NASA Space Science Data Coordinated Archive (NSSDCA)','nssdc.gsfc.nasa.gov'],
+ ['NASA Science – Solar System Exploration, Missions','science.nasa.gov/solar-system'],
+ ['NASA JPL – Mars Exploration Program','mars.nasa.gov / science.nasa.gov/mars'],
+ ['Lunar Reconnaissance Orbiter Camera – Apollo & Surveyor sites','lroc.sese.asu.edu'],
+ ['NASA History Office – Apollo Lunar Surface Journal','nasa.gov/history'],
+ ['NASA 3D Resources','science.nasa.gov/3d-resources'],
+];
+
+// ===== STATE =====
+const STORE='ccr-v1';
+const S = {lang:'vi', sound:true, restored:[], pos:{}, planet:null, tut:false};
+try{ const raw=localStorage.getItem(STORE); if(raw) Object.assign(S, JSON.parse(raw)); }catch(e){}
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){} }
+const t=(k,v)=>{ let s=(T[S.lang]&&T[S.lang][k])??T.vi[k]??k; if(v) for(const x in v) s=s.split('{'+x+'}').join(v[x]); return s; };
+const L=o=>typeof o==='string'?o:(o[S.lang]??o.vi);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isDone=id=>S.restored.includes(id);
+const relicsOf=p=>RELICS.filter(r=>r.planet===p);
+const doneCount=p=>relicsOf(p).filter(r=>isDone(r.id)).length;
+const pName=p=>t(p);
+
+function fmtDate(iso){ const [y,m,d]=iso.split('-'); if(S.lang==='vi') return `${d}/${m}/${y}`;
+ const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${M[+m-1]} ${+d}, ${y}`; }
+function fmtLat(a,p){ if(p==='deep') return 'Dec '+(a>=0?'+':'−')+Math.abs(a).toFixed(1)+'°'; if(Math.abs(a)<0.005) return '0°'; return Math.abs(a).toFixed(2)+'°'+(a>=0?'N':'S'); }
+function fmtRA(lon,full){ let ra=((180-lon)%360+360)%360/15; let h=Math.floor(ra), m=Math.round((ra-h)*60); if(m===60){h=(h+1)%24;m=0;} return full?`RA ${h}h${String(m).padStart(2,'0')}m`:`${h}h`; }
+function fmtLon(lon,planet,full=true){ if(planet==='deep') return fmtRA(lon,full); if(planet==='mars'){ return (((lon%360)+360)%360).toFixed(2)+'°E'; } return Math.abs(lon).toFixed(2)+'°'+(lon>=0?'E':'W'); }
+function fmtCoord(lat,lon,p){ return p==='deep'? fmtLon(lon,p)+', '+fmtLat(lat,p) : fmtLat(lat,p)+', '+fmtLon(lon,p); }
+function fmtNum(n){ return S.lang==='vi'? n.toLocaleString('vi-VN') : n.toLocaleString('en-US'); }
+
+// ===== SOUND =====
+let AC=null;
+function beep(f,d,type='sine',vol=.05,when=0){ if(!S.sound) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const tt=AC.currentTime+when; const o=AC.createOscillator(), g=AC.createGain(); o.type=type; o.frequency.setValueAtTime(f,tt); g.gain.setValueAtTime(vol,tt); g.gain.exponentialRampToValueAtTime(.0001,tt+d); o.connect(g); g.connect(AC.destination); o.start(tt); o.stop(tt+d+.03);}catch(e){} }
+const sfx={ tap:()=>beep(660,.07,'triangle',.04), ok:()=>{beep(523,.14,'sine',.05);beep(784,.22,'sine',.05,.1);}, bad:()=>beep(170,.22,'square',.025),
+ glow:()=>[523,659,784,1047,1319].forEach((f,i)=>beep(f,1.1,'sine',.035,i*.11)), type:()=>beep(1300+Math.random()*400,.018,'square',.006), lock:()=>{beep(880,.1,'sine',.05);beep(1320,.25,'sine',.05,.08);} };
+
+// ===== MATH / WORLD =====
+const W=2880, H=1440, RAD=Math.PI/180, TAU=Math.PI*2;
+const PLANETS={
+ moon:{R:1737.4, seed:11, start:[3.5,19.5]},
+ mars:{R:3389.5, seed:29, start:[2.5,-9.5]},
+ deep:{R:57.29578, seed:41, start:[0,-60]},
+};
+const ll2xy=(lat,lon)=>({x:((lon+180)/360)*W, y:((90-lat)/180)*H});
+const xy2ll=(x,y)=>({lat:90-y/H*180, lon:(((x/W)*360)%360+360)%360-180});
+const wrapDX=dx=>{ dx=((dx%W)+W)%W; return dx>W/2?dx-W:dx; };
+const modW=x=>((x%W)+W)%W;
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+function gcKm(a1,o1,a2,o2,R){ const p1=a1*RAD,p2=a2*RAD,dp=(a2-a1)*RAD,dl=(o2-o1)*RAD; const h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2; return 2*R*Math.asin(Math.min(1,Math.sqrt(h))); }
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function makeFbm(seed,bx,by,oct){ const rnd=mulberry32(seed), layers=[];
+ for(let o=0;o<oct;o++){ const gx=bx<<o, gy=by<<o, g=new Float32Array(gx*(gy+1)); for(let i=0;i<g.length;i++) g[i]=rnd(); layers.push({gx,gy,g}); }
+ return (u,v)=>{ let s=0,a=1,n=0; for(const Lr of layers){ const x=u*Lr.gx, y=v*Lr.gy; const x0=Math.floor(x); const y0=Math.min(Math.floor(y),Lr.gy-1); const fx=x-x0, fy=y-y0; const xa=((x0%Lr.gx)+Lr.gx)%Lr.gx, xb=(xa+1)%Lr.gx, g=Lr.g, gx=Lr.gx;
+  const A=g[y0*gx+xa],B=g[y0*gx+xb],C=g[(y0+1)*gx+xa],D=g[(y0+1)*gx+xb]; const sx=fx*fx*(3-2*fx), sy=fy*fy*(3-2*fy);
+  s+=a*((A+(B-A)*sx)*(1-sy)+(C+(D-C)*sx)*sy); n+=a; a*=.5; } return s/n; };
+}
+const smooth=(e0,e1,x)=>{ const k=clamp((x-e0)/(e1-e0),0,1); return k*k*(3-2*k); };
+
+// ===== TERRAIN =====
+const TERRAIN={};
+function genTerrain(pid){
+ const LW=720, LH=360, P=PLANETS[pid];
+ const small=document.createElement('canvas'); small.width=LW; small.height=LH;
+ const sctx=small.getContext('2d'); const img=sctx.createImageData(LW,LH), D=img.data;
+ const n1=makeFbm(P.seed,8,4,6), n2=makeFbm(P.seed+7,16,8,4);
+ const prep=a=>a.map(f=>({lat:f[1],lon:f[2],r:f[3],sl:Math.sin(f[1]*RAD),cl:Math.cos(f[1]*RAD),lo:f[2]*RAD}));
+ const feats = pid==='moon'? prep(MOON_FEATURES) : pid==='mars'? prep(MARS_DARK) : [];
+ const gp={sl:Math.sin(27.13*RAD),cl:Math.cos(27.13*RAD),lo:(180-192.86)*RAD}, gc={sl:Math.sin(-28.94*RAD),cl:Math.cos(-28.94*RAD),lo:(180-266.4)*RAD};
+ const bright = pid==='mars'? prep(MARS_BRIGHT) : [];
+ const spa = {lat:-53,lon:-169,r:38,sl:Math.sin(-53*RAD),cl:Math.cos(-53*RAD),lo:-169*RAD};
+ const featW=(f,sl,cl,lon,m2)=>{ const c=sl*f.sl+cl*f.cl*Math.cos(lon-f.lo); const d=Math.acos(clamp(c,-1,1))/RAD; const e=f.r*(1+(m2-.5)*1.25); return 1-smooth(e*.75,e*1.12,d); };
+ for(let j=0;j<LH;j++){ const latd=90-(j+.5)/LH*180, lat=latd*RAD, sl=Math.sin(lat), cl=Math.cos(lat);
+  for(let i=0;i<LW;i++){ const lon=((i+.5)/LW*360-180)*RAD, u=i/LW, v=j/LH; const n=n1(u,v), m2=n2(u,v);
+   let r,g,b;
+   if(pid==='deep'){
+    const sb=sl*gp.sl+cl*gp.cl*Math.cos(lon-gp.lo); const bdeg=Math.asin(clamp(sb,-1,1))/RAD;
+    const dgc=Math.acos(clamp(sl*gc.sl+cl*gc.cl*Math.cos(lon-gc.lo),-1,1))/RAD;
+    let mw=Math.exp(-((bdeg/(9+6*m2))**2))*(.45+.9*n) + Math.exp(-((dgc/20)**2))*.7*n; const rift=Math.exp(-(((bdeg-1.5)/2.2)**2))*clamp((dgc<70?1:0)*(m2-.35)*2,0,1); mw*=1-rift*.75;
+    const neb=Math.pow(n,4)*.6;
+    r=6+mw*78+neb*30; g=9+mw*80+neb*14; b=24+mw*98+neb*46;
+   } else if(pid==='moon'){
+    r=g=b=128+78*(n-.5)*2.2+ (m2-.5)*30; r+=4; g+=3;
+    let w=0; for(const f of feats){ const x=featW(f,sl,cl,lon,m2); if(x>w) w=x; }
+    const ws=featW(spa,sl,cl,lon,m2)*.22;
+    const mr=74+40*(n-.5)*2, mg=74+38*(n-.5)*2, mb=80+36*(n-.5)*2;
+    r=r*(1-w)+mr*w; g=g*(1-w)+mg*w; b=b*(1-w)+mb*w; r*=1-ws; g*=1-ws; b*=1-ws;
+   } else {
+    r=176+60*(n-.5)*2; g=94+34*(n-.5)*2; b=56+20*(n-.5)*2;
+    let w=0; for(const f of feats){ const x=featW(f,sl,cl,lon,m2); if(x>w) w=x; }
+    w*=.78; const dr=96+20*(n-.5), dg=58+12*(n-.5), db=44+10*(n-.5);
+    r=r*(1-w)+dr*w; g=g*(1-w)+dg*w; b=b*(1-w)+db*w;
+    let br=0; for(const f of bright){ const x=featW(f,sl,cl,lon,m2); if(x>br) br=x; } br*=.45;
+    r=r*(1-br)+222*br; g=g*(1-br)+164*br; b=b*(1-br)+112*br;
+    const cap = latd>0 ? smooth(77,83,latd+(m2-.5)*8) : smooth(80,86,-latd+(m2-.5)*8);
+    r=r*(1-cap)+236*cap; g=g*(1-cap)+232*cap; b=b*(1-cap)+226*cap;
+   }
+   const k=(j*LW+i)*4; D[k]=r; D[k+1]=g; D[k+2]=b; D[k+3]=255;
+  }}
+ sctx.putImageData(img,0,0);
+ const big=document.createElement('canvas'); big.width=W; big.height=H; const c=big.getContext('2d');
+ c.imageSmoothingEnabled=true; c.imageSmoothingQuality='high'; c.drawImage(small,0,0,W,H);
+ // grain
+ const tile=document.createElement('canvas'); tile.width=tile.height=256; const tc=tile.getContext('2d'); const rnd=mulberry32(P.seed+3);
+ for(let i=0;i<9000;i++){ const a=rnd()*.22; tc.fillStyle=rnd()<.5?`rgba(255,255,255,${a})`:`rgba(0,0,0,${a})`; tc.fillRect(rnd()*256|0,rnd()*256|0,1+(rnd()<.2),1); }
+ c.fillStyle=c.createPattern(tile,'repeat'); c.fillRect(0,0,W,H);
+ const R=mulberry32(P.seed+5);
+ const pxd=W/360;
+ const crater=(lat,lon,rdeg,s)=>{ const p=ll2xy(lat,lon); const r=Math.max(1.4,rdeg*pxd); const sx=1/Math.max(.22,Math.cos(lat*RAD));
+  for(const off of [0,-W,W]){ const x=p.x+off; if(x+r*sx*1.4<0||x-r*sx*1.4>W) continue;
+   c.save(); c.translate(x,p.y); c.scale(sx,1);
+   c.beginPath(); c.arc(0,0,r,0,TAU); c.fillStyle=`rgba(0,0,0,${.2*s})`; c.fill();
+   c.beginPath(); c.arc(r*.2,r*.2,r*.78,0,TAU); c.fillStyle=`rgba(255,255,255,${.08*s})`; c.fill();
+   c.lineWidth=Math.max(.8,r*.17);
+   c.beginPath(); c.arc(0,0,r,Math.PI*.75,Math.PI*1.75); c.strokeStyle=`rgba(255,255,255,${.24*s})`; c.stroke();
+   c.beginPath(); c.arc(0,0,r,Math.PI*1.75,Math.PI*2.75); c.strokeStyle=`rgba(0,0,0,${.22*s})`; c.stroke();
+   c.restore(); } };
+ const rays=(lat,lon,len,n,a)=>{ const p=ll2xy(lat,lon); c.save(); c.globalCompositeOperation='screen'; for(let i=0;i<n;i++){ const an=R()*TAU, l=(len*.4+R()*len)*pxd; for(const off of [0,-W,W]){ const g=c.createLinearGradient(p.x+off,p.y,p.x+off+Math.cos(an)*l,p.y+Math.sin(an)*l); g.addColorStop(0,`rgba(255,255,255,${a})`); g.addColorStop(1,'rgba(255,255,255,0)'); c.strokeStyle=g; c.lineWidth=1+R()*2.5; c.beginPath(); c.moveTo(p.x+off,p.y); c.lineTo(p.x+off+Math.cos(an)*l/Math.max(.3,Math.cos(lat*RAD)),p.y+Math.sin(an)*l); c.stroke(); } } c.restore(); };
+ const sphereLat=()=>Math.asin(2*R()-1)/RAD;
+ if(pid==='deep'){
+  c.fillStyle='rgba(0,0,0,0)';
+  for(let i=0;i<14000;i++){ const la=sphereLat(), lo=R()*360-180, p=ll2xy(la,lo); const a=.15+Math.pow(R(),3)*.85; c.fillStyle=`rgba(${215+R()*40|0},${220+R()*35|0},255,${a})`; const s=R()<.04?2:1; c.fillRect(p.x,p.y,s,s); }
+  const SP={}; STARS.forEach(s=>{ SP[s[0]]=ll2xy(s[3],raLon(s[1],s[2])); });
+  c.strokeStyle='rgba(140,175,230,.28)'; c.lineWidth=1.2; for(const [a,b2] of STAR_LINES){ const p=SP[a], q=SP[b2]; c.beginPath(); c.moveTo(p.x,p.y); c.lineTo(q.x,q.y); c.stroke(); }
+  c.setLineDash([6,8]); c.strokeStyle='rgba(244,182,63,.32)'; c.beginPath(); for(let L2=0;L2<=360;L2+=2){ const lam=L2*RAD, eps=23.44*RAD; const ra=(Math.atan2(Math.sin(lam)*Math.cos(eps),Math.cos(lam))/RAD+360)%360; const de=Math.asin(Math.sin(eps)*Math.sin(lam))/RAD; const p=ll2xy(de,180-ra); if(L2===0) c.moveTo(p.x,p.y); else { const prev=c._px; if(prev!==undefined&&Math.abs(p.x-prev)>W/2) c.moveTo(p.x,p.y); else c.lineTo(p.x,p.y);} c._px=p.x; } c.stroke(); c.setLineDash([]);
+  for(const s of STARS){ const p=SP[s[0]]; const r=Math.max(1.6,4.2-s[4]*1.1); const gr=c.createRadialGradient(p.x,p.y,0,p.x,p.y,r*4); gr.addColorStop(0,'rgba(255,255,255,.95)'); gr.addColorStop(.25,'rgba(210,225,255,.35)'); gr.addColorStop(1,'rgba(200,220,255,0)'); c.fillStyle=gr; c.beginPath(); c.arc(p.x,p.y,r*4,0,TAU); c.fill(); c.fillStyle='#fff'; c.beginPath(); c.arc(p.x,p.y,r*.7,0,TAU); c.fill(); }
+ } else if(pid==='moon'){
+  for(let i=0;i<2600;i++) crater(sphereLat(),R()*360-180,.2+R()*.55,.9);
+  for(let i=0;i<300;i++) crater(sphereLat(),R()*360-180,.7+R()*1.4,1);
+  for(let i=0;i<18;i++) crater(sphereLat(),R()*360-180,2+R()*3,.75);
+  rays(-43.31,-11.36,38,60,.16); rays(9.62,-20.08,14,40,.14); rays(23.7,-47.4,8,24,.12);
+  [[-43.31,-11.36,1.45],[9.62,-20.08,1.55],[8.1,-38,.55],[23.7,-47.4,.7],[51.6,-9.4,1.7],[-58.4,-14.4,3.7],[-84.9,-35.5,1.6]].forEach(a=>crater(a[0],a[1],a[2],1.4));
+  const pl=ll2xy(51.6,-9.4); c.fillStyle='rgba(40,40,46,.55)'; c.beginPath(); c.ellipse(pl.x,pl.y,1.5*pxd/Math.cos(51.6*RAD),1.5*pxd,0,0,TAU); c.fill();
+ } else {
+  for(let i=0;i<1100;i++) crater(sphereLat(),R()*360-180,.15+R()*.5,.55);
+  for(let i=0;i<150;i++) crater(sphereLat(),R()*360-180,.6+R()*1.5,.6);
+  for(let i=0;i<14;i++) crater(sphereLat(),R()*360-180,2+R()*3,.55);
+  [[-5.37,137.81,1.3],[18.38,77.58,.45],[-14.5,175.4,1.4],[-2.28,-5.23,.35]].forEach(a=>crater(a[0],a[1],a[2],1.2));
+  // Valles Marineris
+  const vm=[[-6.5,-96],[-7.5,-88],[-9.5,-80],[-12,-71],[-13.5,-62],[-14,-54],[-12,-46],[-8,-40]].map(a=>ll2xy(a[0],a[1]));
+  const stroke=(w,col)=>{ c.strokeStyle=col; c.lineWidth=w; c.lineCap='round'; c.lineJoin='round'; c.beginPath(); vm.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y)); c.stroke(); };
+  stroke(20,'rgba(90,40,25,.35)'); stroke(10,'rgba(60,26,18,.55)'); stroke(3,'rgba(30,12,8,.5)');
+  const volcano=(lat,lon,rdeg)=>{ const p=ll2xy(lat,lon); const r=rdeg*pxd; const g=c.createRadialGradient(p.x-r*.25,p.y-r*.25,r*.1,p.x,p.y,r);
+   g.addColorStop(0,'rgba(240,190,140,.55)'); g.addColorStop(.7,'rgba(200,130,80,.25)'); g.addColorStop(1,'rgba(80,35,20,0)'); c.fillStyle=g; c.beginPath(); c.arc(p.x,p.y,r,0,TAU); c.fill();
+   c.strokeStyle='rgba(70,30,18,.45)'; c.lineWidth=2; c.beginPath(); c.arc(p.x,p.y,r*.92,0,TAU); c.stroke();
+   c.fillStyle='rgba(60,25,15,.55)'; c.beginPath(); c.arc(p.x,p.y,r*.18,0,TAU); c.fill(); };
+  volcano(18.65,-133.8,5.2); volcano(-8.26,-120.09,3); volcano(1.48,-112.96,2.6); volcano(11.92,-104.08,2.6); volcano(24.8,146.9,2.4);
+ }
+ const tex=document.createElement('canvas'); tex.width=LW; tex.height=LH; const tx=tex.getContext('2d'); tx.drawImage(big,0,0,LW,LH);
+ TERRAIN[pid]={big, tex:tx.getImageData(0,0,LW,LH), texCanvas:tex};
+}
+
+// ===== RELIC ICONS =====
+function drawIcon(c,kind,x,y,s,col,detail){
+ c.save(); c.translate(x,y); c.scale(s,s); c.lineCap='round'; c.lineJoin='round'; c.strokeStyle=col; c.fillStyle=col; c.lineWidth=1.6;
+ const leg=(x1,y1,x2,y2)=>{c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke(); c.beginPath(); c.ellipse(x2,y2+.5,2.2,1,0,0,TAU); c.fill();};
+ if(kind==='lm'){
+  c.beginPath(); c.moveTo(-8,-6); c.lineTo(8,-6); c.lineTo(10,0); c.lineTo(8,5); c.lineTo(-8,5); c.lineTo(-10,0); c.closePath(); c.globalAlpha=.85; c.fill(); c.globalAlpha=1;
+  leg(-8,3,-14,10); leg(8,3,14,10); leg(-3,5,-5,11); leg(3,5,5,11);
+  if(detail){ c.strokeStyle='rgba(0,0,0,.35)'; c.lineWidth=.8; c.beginPath(); c.moveTo(-8,-1); c.lineTo(8,-1); c.stroke(); }
+ } else if(kind==='lander'){
+  c.beginPath(); c.moveTo(-7,2); c.lineTo(7,2); c.lineTo(0,-4); c.closePath(); c.fill();
+  leg(-5,2,-12,9); leg(5,2,12,9); leg(0,2,0,10);
+  c.beginPath(); c.moveTo(0,-4); c.lineTo(0,-13); c.stroke();
+  c.beginPath(); c.ellipse(-4,-14,5,2.4,-.5,0,TAU); c.globalAlpha=.85; c.fill(); c.globalAlpha=1;
+  c.fillRect(1,-12,8,5);
+ } else if(kind==='rover'){
+  c.fillRect(-10,-4,20,6);
+  for(const wx of [-8,0,8]){ c.beginPath(); c.arc(wx,5,3.2,0,TAU); c.fill(); }
+  c.beginPath(); c.moveTo(6,-4); c.lineTo(6,-12); c.stroke(); c.fillRect(3,-15,7,3.5);
+  c.globalAlpha=.7; c.fillRect(-11,-7,15,2); c.globalAlpha=1;
+ } else if(kind==='heli'){
+  c.beginPath(); c.ellipse(0,0,5,4,0,0,TAU); c.fill();
+  c.beginPath(); c.moveTo(0,-4); c.lineTo(0,-11); c.stroke();
+  c.lineWidth=1.8; c.beginPath(); c.moveTo(-13,-9); c.lineTo(13,-9); c.moveTo(-11,-12); c.lineTo(11,-12); c.stroke();
+  c.lineWidth=1.4; leg(-3,3,-8,10); leg(3,3,8,10);
+ } else if(kind==='probe'){
+  c.beginPath(); c.ellipse(-1,-5,11,4.2,-.15,0,TAU); c.globalAlpha=.9; c.fill(); c.globalAlpha=1;
+  c.beginPath(); c.moveTo(-1,-9); c.lineTo(-1,-14); c.stroke();
+  c.fillRect(-4,-1,8,6);
+  c.beginPath(); c.moveTo(4,3); c.lineTo(14,9); c.stroke(); c.beginPath(); c.arc(14.5,9.5,2.2,0,TAU); c.fill();
+  c.lineWidth=1; c.beginPath(); c.moveTo(-4,2); c.lineTo(-17,5); c.stroke();
+ } else { // impact
+  c.globalAlpha=.9; c.lineWidth=2; c.beginPath(); c.ellipse(0,2,11,6,0,0,TAU); c.stroke();
+  c.globalAlpha=.5; c.beginPath(); c.ellipse(0,2,6,3,0,0,TAU); c.fill(); c.globalAlpha=1;
+  for(const [a,d] of [[-2.4,14],[-1.9,16],[-.9,15],[-.5,13],[-2.9,13]]){ c.beginPath(); c.arc(Math.cos(a)*d,2+Math.sin(a)*d*.7,1.3,0,TAU); c.fill(); }
+ }
+ c.restore();
+}
+
+// ===== MAP STATE =====
+const cv=$('#map'), ctx=cv.getContext('2d');
+let DPR=1, VW=0, VH=0;
+const G={ planet:null, robot:{x:0,y:0,face:1,trail:[]}, target:null, targetRelic:null, keys:{}, near:null, mode:'title', time:0, burst:null, activeShown:{}, pointerDown:false };
+function resize(){ DPR=Math.min(2,window.devicePixelRatio||1); VW=cv.clientWidth; VH=cv.clientHeight; cv.width=Math.round(VW*DPR); cv.height=Math.round(VH*DPR); drawStars(); }
+window.addEventListener('resize',resize);
+
+function setPlanet(p){
+ if(!TERRAIN[p]) genTerrain(p);
+ G.planet=p; S.planet=p;
+ const pos=S.pos[p]; if(pos){ G.robot.x=pos.x; G.robot.y=pos.y; } else { const q=ll2xy(PLANETS[p].start[0],PLANETS[p].start[1]); G.robot.x=q.x; G.robot.y=q.y; }
+ G.robot.trail=[]; G.target=null; G.targetRelic=null; save();
+ $('#planetChip').textContent=pName(p); document.body.dataset.planet=p;
+}
+
+function zoomNow(){ return Math.max(1, VH/H, VW/W); }
+function cam(){ const z=zoomNow(); const hh=VH/z; return {z, x:G.robot.x, y:clamp(G.robot.y, hh/2, H-hh/2)}; }
+function toScreen(x,y,C){ return {x:VW/2+wrapDX(x-C.x)*C.z, y:VH/2+(y-C.y)*C.z}; }
+function toWorld(sx,sy,C){ return {x:modW(C.x+(sx-VW/2)/C.z), y:clamp(C.y+(sy-VH/2)/C.z,0,H)}; }
+
+// ===== INPUT =====
+function pointerWorld(e){ const r=cv.getBoundingClientRect(); return toWorld(e.clientX-r.left, e.clientY-r.top, cam()); }
+cv.addEventListener('pointerdown',e=>{ if(G.mode!=='map') return; G.pointerDown=true; cv.setPointerCapture(e.pointerId); setTargetFrom(e,true); hideTut(); });
+cv.addEventListener('pointermove',e=>{ if(G.mode!=='map'||!G.pointerDown) return; setTargetFrom(e,false); });
+const up=()=>{ G.pointerDown=false; }; cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+function setTargetFrom(e,allowSnap){ const w=pointerWorld(e); G.targetRelic=null;
+ if(allowSnap){ const C=cam(); for(const r of relicsOf(G.planet)){ const p=ll2xy(r.lat,r.lon); const d=Math.hypot(wrapDX(p.x-w.x),p.y-w.y)*C.z; if(d<30){ G.target={x:p.x,y:p.y}; G.targetRelic=r; return; } } }
+ G.target=w; }
+window.addEventListener('keydown',e=>{ if(G.mode!=='map') return; const k=e.key.toLowerCase(); if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){ G.keys[k]=true; G.target=null; e.preventDefault(); hideTut(); }
+ if((k==='enter'||k===' ')&&G.near&&!document.querySelector('.overlay.open')){ e.preventDefault(); openRelic(G.near); } });
+window.addEventListener('keyup',e=>{ G.keys[e.key.toLowerCase()]=false; });
+
+// ===== UPDATE =====
+let lastSave=0, lastHud=0;
+function update(dt){
+ const rb=G.robot, sp=250; let vx=0, vy=0; const k=G.keys;
+ if(k.arrowleft||k.a) vx-=1; if(k.arrowright||k.d) vx+=1; if(k.arrowup||k.w) vy-=1; if(k.arrowdown||k.s) vy+=1;
+ let moved=false;
+ if(vx||vy){ const n=Math.hypot(vx,vy); rb.x+=vx/n*sp*dt; rb.y+=vy/n*sp*dt; if(vx) rb.face=Math.sign(vx); moved=true; }
+ else if(G.target){ const dx=wrapDX(G.target.x-rb.x), dy=G.target.y-rb.y, d=Math.hypot(dx,dy); const stop=G.targetRelic?16:0;
+  if(d<=stop+sp*dt){ if(!G.targetRelic){ rb.x=G.target.x; rb.y=G.target.y; } G.target=null; }
+  else { rb.x+=dx/d*sp*dt; rb.y+=dy/d*sp*dt; if(Math.abs(dx)>1) rb.face=Math.sign(dx); moved=true; } }
+ rb.x=modW(rb.x); rb.y=clamp(rb.y,14,H-14);
+ if(moved){ const lt=rb.trail[rb.trail.length-1]; if(!lt||Math.hypot(wrapDX(rb.x-lt.x),rb.y-lt.y)>7){ rb.trail.push({x:rb.x,y:rb.y}); if(rb.trail.length>160) rb.trail.shift(); } }
+ // proximity
+ let best=null,bd=1e9; for(const r of relicsOf(G.planet)){ const p=ll2xy(r.lat,r.lon); const d=Math.hypot(wrapDX(p.x-rb.x),p.y-rb.y); if(d<bd){bd=d;best=r;} }
+ G.near = bd<34? best:null;
+ for(const a of ACTIVE.filter(a=>a.planet===G.planet)){ const p=ll2xy(a.lat,a.lon); const d=Math.hypot(wrapDX(p.x-rb.x),p.y-rb.y); if(d<40&&!G.activeShown[a.name]){ G.activeShown[a.name]=1; toast(L(a.note)); } if(d>120) G.activeShown[a.name]=0; }
+ const now=performance.now();
+ if(now-lastSave>2000){ lastSave=now; S.pos[G.planet]={x:rb.x,y:rb.y}; save(); }
+ if(now-lastHud>120){ lastHud=now; updateHud(); }
+}
+
+function updateHud(){
+ const rb=G.robot, ll=xy2ll(rb.x,rb.y), p=G.planet;
+ $('#coord').textContent=fmtCoord(ll.lat,ll.lon,p);
+ const todo=relicsOf(p).filter(r=>!isDone(r.id));
+ $('#prog').textContent=t('progress',{n:doneCount(p),t:relicsOf(p).length});
+ const arrow=$('#arrow');
+ if(todo.length){ let best=null,bd=1e9; for(const r of todo){ const d=gcKm(ll.lat,ll.lon,r.lat,r.lon,PLANETS[p].R); if(d<bd){bd=d;best=r;} }
+  $('#nearName').textContent=best.name; $('#nearDist').textContent= p==='deep'? bd.toFixed(1)+'°' : fmtNum(Math.round(bd))+' '+t('km'); $('#nearLabel').textContent=t('nearest');
+  const q=ll2xy(best.lat,best.lon); const ang=Math.atan2(q.y-rb.y, wrapDX(q.x-rb.x)); arrow.style.transform=`rotate(${ang}rad)`; arrow.style.opacity=1;
+ } else { $('#nearLabel').textContent=t('allLit'); $('#nearName').textContent=''; $('#nearDist').textContent=''; arrow.style.opacity=0; }
+ const btn=$('#interact');
+ if(G.near){ btn.hidden=false; btn.textContent=isDone(G.near.id)? t('viewFile',{name:G.near.name}) : t('scan',{name:G.near.name}); btn.classList.toggle('done',isDone(G.near.id)); }
+ else btn.hidden=true;
+}
+
+// ===== RENDER MAP =====
+function render(ts){
+ const c=ctx, C=cam(), z=C.z, Tr=TERRAIN[G.planet]; c.setTransform(DPR,0,0,DPR,0,0);
+ const sw=VW/z, sh=VH/z; const left=modW(C.x-sw/2), top=C.y-sh/2;
+ const w1=Math.min(sw, W-left);
+ c.imageSmoothingEnabled=true;
+ c.drawImage(Tr.big,left,top,w1,sh,0,0,w1*z,VH);
+ if(w1<sw) c.drawImage(Tr.big,0,top,sw-w1,sh,w1*z,0,(sw-w1)*z,VH);
+ // grid
+ c.lineWidth=1; c.strokeStyle='rgba(255,255,255,.07)'; c.fillStyle='rgba(255,255,255,.42)'; c.font='500 11px "Chakra Petch", sans-serif';
+ for(let lon=-180;lon<180;lon+=15){ const s=toScreen(ll2xy(0,lon).x,0,C); if(s.x<-2||s.x>VW+2) continue; c.beginPath(); c.moveTo(s.x,0); c.lineTo(s.x,VH); c.stroke(); c.textAlign='left'; c.fillText(fmtLon(lon,G.planet,false).replace('.00',''),s.x+4,VH-10); }
+ for(let lat=-75;lat<=75;lat+=15){ const s=toScreen(0,ll2xy(lat,0).y,C); if(s.y<0||s.y>VH) continue; c.beginPath(); c.moveTo(0,s.y); c.lineTo(VW,s.y); c.stroke(); c.textAlign='left'; c.fillText(G.planet==='deep'?(lat>0?'+':lat<0?'−':'')+Math.abs(lat)+'°':fmtLat(lat).replace('.00',''),6,s.y-4); }
+ // labels
+ c.textAlign='center'; c.font='500 13px "Chakra Petch", sans-serif';
+ for(const [n,la,lo] of (G.planet==='moon'?MOON_LABELS:G.planet==='mars'?MARS_LABELS:DEEP_LABELS)){ const q=ll2xy(la,lo), s=toScreen(q.x,q.y,C); if(s.x<-120||s.x>VW+120||s.y<-20||s.y>VH+20) continue; c.fillStyle='rgba(0,0,0,.35)'; c.fillText(n,s.x+1,s.y+1); c.fillStyle='rgba(255,255,255,.62)'; c.fillText(n,s.x,s.y); }
+ // trail
+ const tr=G.robot.trail, dp=G.planet==='deep'; for(let i=0;i<tr.length;i++){ const s=toScreen(tr[i].x,tr[i].y,C); const k=i/tr.length; if(dp){ c.fillStyle=`rgba(95,208,230,${.05+.4*k})`; c.beginPath(); c.arc(s.x,s.y,1+1.5*k,0,TAU); c.fill(); } else { c.fillStyle=`rgba(20,16,12,${.06+.3*k})`; c.fillRect(s.x-4,s.y+5,3,2); c.fillRect(s.x+2,s.y+5,3,2); } }
+ // target
+ if(G.target){ const s=toScreen(G.target.x,G.target.y,C); c.strokeStyle='rgba(95,208,230,.8)'; c.lineWidth=1.5; c.beginPath(); c.arc(s.x,s.y,8+Math.sin(ts/150)*2,0,TAU); c.stroke(); }
+ // active markers
+ for(const a of ACTIVE.filter(a=>a.planet===G.planet)){ const q=ll2xy(a.lat,a.lon), s=toScreen(q.x,q.y,C); if(s.x<-40||s.x>VW+40) continue; const bl=(Math.sin(ts/300)+1)/2;
+  c.fillStyle=`rgba(95,208,230,${.4+.6*bl})`; c.beginPath(); c.arc(s.x,s.y,4,0,TAU); c.fill(); c.strokeStyle='rgba(95,208,230,.5)'; c.beginPath(); c.arc(s.x,s.y,9,0,TAU); c.stroke();
+  c.font='500 12px "Chakra Petch", sans-serif'; c.fillStyle='rgba(180,236,248,.9)'; c.fillText(a.name,s.x,s.y+22); }
+ // relics
+ for(const r of relicsOf(G.planet)){ const q=ll2xy(r.lat,r.lon), s=toScreen(q.x,q.y,C); if(s.x<-80||s.x>VW+80||s.y<-80||s.y>VH+80) continue; const done=isDone(r.id);
+  if(done){ const pulse=1+.08*Math.sin(ts/500+q.x); c.save(); c.globalCompositeOperation='lighter';
+   const g=c.createRadialGradient(s.x,s.y,0,s.x,s.y,62*pulse); g.addColorStop(0,'rgba(255,214,120,.75)'); g.addColorStop(.25,'rgba(244,182,63,.35)'); g.addColorStop(1,'rgba(244,140,40,0)'); c.fillStyle=g; c.beginPath(); c.arc(s.x,s.y,62*pulse,0,TAU); c.fill(); c.restore();
+   drawIcon(c,r.kind,s.x,s.y,1,'#ffe3a1');
+  } else { const ph=((ts/1600)+q.x*.001)%1; c.strokeStyle=`rgba(95,208,230,${.55*(1-ph)})`; c.lineWidth=1.5; c.beginPath(); c.arc(s.x,s.y,12+ph*22,0,TAU); c.stroke();
+   drawIcon(c,r.kind,s.x,s.y,1,'rgba(206,210,222,.88)'); }
+  const dRob=Math.hypot(wrapDX(q.x-G.robot.x),q.y-G.robot.y);
+  if(done||dRob<260){ c.font='600 12px "Chakra Petch", sans-serif'; c.fillStyle='rgba(0,0,0,.45)'; c.fillText(r.name,s.x+1,s.y+27); c.fillStyle=done?'#ffd987':'#e9eef8'; c.fillText(r.name,s.x,s.y+26); }
+ }
+ // burst
+ if(G.burst){ const b=G.burst, k=(ts-b.t0)/1400; if(k>1) G.burst=null; else { const q=ll2xy(b.r.lat,b.r.lon), s=toScreen(q.x,q.y,C); c.save(); c.globalCompositeOperation='lighter'; for(let i=0;i<3;i++){ const kk=clamp(k-i*.12,0,1); c.strokeStyle=`rgba(255,210,120,${(1-kk)*.8})`; c.lineWidth=3*(1-kk)+.5; c.beginPath(); c.arc(s.x,s.y,10+kk*140,0,TAU); c.stroke(); } c.restore(); } }
+ // robot
+ drawRobot(c, toScreen(G.robot.x,G.robot.y,C), ts);
+}
+function drawRobot(c,s,ts){
+ const f=G.robot.face, bob=G.target||Object.values(G.keys).some(Boolean)?Math.sin(ts/70)*.8:0;
+ c.save(); c.translate(s.x,s.y+bob); c.fillStyle='rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(0,11,15,4,0,0,TAU); c.fill();
+ c.scale(f,1);
+ c.fillStyle='#2b3150'; c.beginPath(); c.roundRect(-13,4,26,7,3.5); c.fill(); c.fillStyle='#5a6386'; for(let i=-9;i<=9;i+=6){ c.beginPath(); c.arc(i,7.5,2,0,TAU); c.fill(); }
+ c.fillStyle='#eef2fa'; c.beginPath(); c.roundRect(-11,-10,22,15,4); c.fill(); c.strokeStyle='#9aa4bf'; c.lineWidth=1; c.stroke();
+ c.fillStyle='#14203d'; c.beginPath(); c.roundRect(-3,-7,12,7,3); c.fill(); c.fillStyle='#5fd0e6'; c.beginPath(); c.arc(4,-3.5,2.2,0,TAU); c.fill();
+ c.strokeStyle='#cfd6e6'; c.lineWidth=1.4; c.beginPath(); c.moveTo(-6,-10); c.lineTo(-8,-17); c.stroke();
+ c.fillStyle=Math.sin(ts/250)>0?'#f4b63f':'#7a5a1e'; c.beginPath(); c.arc(-8,-18,2.2,0,TAU); c.fill();
+ c.fillStyle='#f4b63f'; c.fillRect(-9,-4,6,2);
+ c.restore();
+}
+
+// ===== STARFIELD (title/planet screens) =====
+const bg=$('#stars');
+function drawStars(){ const d=Math.min(2,devicePixelRatio||1); bg.width=bg.clientWidth*d; bg.height=bg.clientHeight*d; const c=bg.getContext('2d'); const R=mulberry32(4); c.clearRect(0,0,bg.width,bg.height);
+ for(let i=0;i<(bg.width*bg.height)/2600;i++){ const a=R()*.8+.1; c.fillStyle=`rgba(${220+R()*35|0},${225+R()*30|0},255,${a})`; const s=R()<.06?2*d:1*d; c.fillRect(R()*bg.width,R()*bg.height,s,s); } }
+
+// ===== GLOBE =====
+function makeGlobe(canvas, pid, opts={}){
+ const N=opts.res||300; canvas.width=N; canvas.height=N; const c=canvas.getContext('2d'); const img=c.createImageData(N,N), D=img.data;
+ const tilt=(opts.tilt??12)*RAD, st=Math.sin(tilt), ct=Math.cos(tilt); const R=N/2-2, cx=N/2;
+ const idx=[], lat=[], lonV=[], shade=[]; const Lx=-.55,Ly=.35,Lz=.76;
+ for(let j=0;j<N;j++) for(let i=0;i<N;i++){ const x=(i+.5-cx)/R, y=(cx-j-.5)/R, rr=x*x+y*y; if(rr>1) continue; const z=Math.sqrt(1-rr);
+  idx.push((j*N+i)*4); lat.push(Math.asin(clamp(z*st+y*ct,-1,1))); lonV.push(Math.atan2(x, z*ct-y*st));
+  const l=Math.max(0,x*Lx+y*Ly+z*Lz); shade.push(opts.flat? (.75+.35*z) : clamp(.16+.95*l,0,1.1)*(.82+.18*z)); }
+ const n=idx.length; const LA=new Float32Array(lat), LO=new Float32Array(lonV), SH=new Float32Array(shade), IX=new Int32Array(idx);
+ const g={canvas,c,img,D,N,R,cx,st,ct,pid,rot:opts.rot??0,
+  draw(ts){ const tex=TERRAIN[this.pid].tex, TD=tex.data, TW=tex.width, TH=tex.height; const rot=this.rot;
+   for(let k=0;k<n;k++){ let lon=LO[k]+rot; let u=((lon/TAU+.5)%1+1)%1; const tx=(u*TW)|0, ty=clamp(((.5-LA[k]/Math.PI)*TH)|0,0,TH-1); const s=(ty*TW+tx)*4, o=IX[k], sh=SH[k];
+    D[o]=TD[s]*sh; D[o+1]=TD[s+1]*sh; D[o+2]=TD[s+2]*sh; D[o+3]=255; }
+   this.c.putImageData(this.img,0,0);
+   // atmosphere rim
+   const c=this.c; if(this.pid==='deep'){ c.save(); c.globalCompositeOperation='lighter'; const gr=c.createRadialGradient(cx,cx,R*.8,cx,cx,R); gr.addColorStop(0,'rgba(95,208,230,0)'); gr.addColorStop(1,'rgba(95,208,230,.28)'); c.fillStyle=gr; c.beginPath(); c.arc(cx,cx,R,0,TAU); c.fill(); c.restore(); } if(this.pid==='mars'){ c.save(); c.globalCompositeOperation='lighter'; const gr=c.createRadialGradient(cx,cx,R*.86,cx,cx,R*1.01); gr.addColorStop(0,'rgba(255,140,90,0)'); gr.addColorStop(1,'rgba(255,150,100,.22)'); c.fillStyle=gr; c.beginPath(); c.arc(cx,cx,R,0,TAU); c.fill(); c.restore(); }
+   // beacons
+   c.save(); c.globalCompositeOperation='lighter';
+   for(const r of relicsOf(this.pid)){ const done=isDone(r.id); const la=r.lat*RAD, lo=r.lon*RAD-rot; const x=Math.cos(la)*Math.sin(lo), y=this.ct*Math.sin(la)-this.st*Math.cos(la)*Math.cos(lo), z=this.st*Math.sin(la)+this.ct*Math.cos(la)*Math.cos(lo);
+    if(z<=0.02) continue; const px=cx+x*R, py=cx-y*R, a=Math.min(1,z*3);
+    if(done){ const rr=R*.16*(1+.1*Math.sin(ts/400+r.lat)); const gr=c.createRadialGradient(px,py,0,px,py,rr); gr.addColorStop(0,`rgba(255,226,150,${a})`); gr.addColorStop(.3,`rgba(244,182,63,${.45*a})`); gr.addColorStop(1,'rgba(244,140,40,0)'); c.fillStyle=gr; c.beginPath(); c.arc(px,py,rr,0,TAU); c.fill(); }
+    else { c.fillStyle=`rgba(160,220,235,${.35*a})`; c.beginPath(); c.arc(px,py,Math.max(1.2,R*.012),0,TAU); c.fill(); } }
+   c.restore(); } };
+ return g;
+}
+
+// ===== OVERLAYS / UI =====
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); }
+function openOverlay(id){ const o=$('#'+id); o.classList.add('open'); o.setAttribute('aria-hidden','false'); const f=o.querySelector('button,[tabindex]'); if(f) setTimeout(()=>f.focus({preventScroll:true}),30); }
+function closeOverlay(id){ const o=$('#'+id); o.classList.remove('open'); o.setAttribute('aria-hidden','true'); if(id==='ovRelic'){ FLOW++; ACTIVE_MINI.stop&&ACTIVE_MINI.stop(); } }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-close]'); if(b){ sfx.tap(); closeOverlay(b.dataset.close); } });
+let toastTimer=0; function toast(msg,ms=4200){ const el=$('#toast'); el.textContent=msg; el.classList.add('on'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('on'),ms); }
+function hideTut(){ if(!S.tut){ S.tut=true; save(); $('#toast').classList.remove('on'); } }
+
+function applyLang(){
+ document.documentElement.lang=S.lang;
+ document.querySelectorAll('[data-t]').forEach(el=>el.textContent=t(el.dataset.t));
+ document.querySelectorAll('[data-tt]').forEach(el=>{ el.title=t(el.dataset.tt); el.setAttribute('aria-label',t(el.dataset.tt)); });
+ $('#btnStart').textContent = S.restored.length||S.planet ? t('cont') : t('start');
+ $('#langBtn').textContent=S.lang==='vi'?'EN':'VI'; $('#langBtn2').textContent=S.lang==='vi'?'EN':'VI';
+ if(G.planet) $('#planetChip').textContent=pName(G.planet);
+ updatePlanetCards();
+ if(G.mode==='map') updateHud();
+}
+function toggleLang(){ S.lang=S.lang==='vi'?'en':'vi'; save(); applyLang(); sfx.tap(); }
+$('#langBtn').onclick=toggleLang; $('#langBtn2').onclick=toggleLang;
+function syncSound(){ $('#soundBtn').classList.toggle('muted',!S.sound); $('#soundBtn').setAttribute('aria-pressed',S.sound); }
+$('#soundBtn').onclick=()=>{ S.sound=!S.sound; save(); syncSound(); sfx.tap(); };
+
+// title & planet screens
+let globes=[];
+$('#btnStart').onclick=()=>{ sfx.tap(); goPlanets(); };
+function goPlanets(){ G.mode='planets'; show('scrPlanets'); updatePlanetCards(); }
+function updatePlanetCards(){ for(const p of ['moon','mars','deep']){ const el=$('#pc-'+p); if(!el) continue; el.querySelector('.pc-prog').textContent=t('progress',{n:doneCount(p),t:relicsOf(p).length}); el.querySelector('.pc-go').textContent=t('landOn',{p:pName(p)}); el.querySelector('.pc-bar i').style.width=(doneCount(p)/relicsOf(p).length*100)+'%'; } }
+document.querySelectorAll('.pc-go').forEach(b=>b.onclick=()=>{ sfx.tap(); enterMap(b.dataset.p); });
+$('#btnBack').onclick=()=>{ sfx.tap(); G.mode='title'; show('scrTitle'); };
+function enterMap(p){ setPlanet(p); G.mode='map'; show('scrMap'); resize(); updateHud(); if(!S.tut) toast(t('tut'),8000); else if(p==='deep') toast(t('skyHint'),6000); }
+$('#planetChip').onclick=()=>{ sfx.tap(); S.pos[G.planet]={x:G.robot.x,y:G.robot.y}; save(); goPlanets(); };
+$('#interact').onclick=()=>{ if(G.near){ sfx.tap(); openRelic(G.near); } };
+$('#btnHeritage').onclick=()=>{ sfx.tap(); openHeritage({}); };
+$('#btnLog').onclick=()=>{ sfx.tap(); openLog(); };
+$('#btnSources').onclick=()=>{ sfx.tap(); openSources(); };
+$('#btnSourcesTitle').onclick=()=>{ sfx.tap(); openSources(); };
+
+// ===== TYPEWRITER =====
+let skipType=false;
+function typeLines(box, lines){ skipType=false; return lines.reduce((pr,ln)=>pr.then(()=>new Promise(res=>{
+  const row=document.createElement('p'); row.className='ln '+ln.who; if(ln.tag){ const tg=document.createElement('b'); tg.textContent=ln.tag; row.appendChild(tg); }
+  const sp=document.createElement('span'); row.appendChild(sp); box.appendChild(row); row.scrollIntoView({block:'nearest'});
+  const txt=ln.text, speed=reduceMotion?0:(ln.slow?42:14); let i=0;
+  if(!speed){ sp.textContent=txt; return setTimeout(res,80); }
+  const step=()=>{ if(skipType){ sp.textContent=txt; return setTimeout(res,60); } i++; sp.textContent=txt.slice(0,i); if(i%3===0) sfx.type(); if(i<txt.length) setTimeout(step,speed); else setTimeout(res,ln.slow?600:260); };
+  step(); })), Promise.resolve()); }
+$('#relicBody').addEventListener('click',e=>{ if(e.target.closest('.log')) skipType=true; });
+
+// ===== RELIC FLOW =====
+let ACTIVE_MINI={}; let FLOW=0;
+const body=()=>$('#relicBody');
+function openRelic(r){ FLOW++; G.keys={}; G.target=null; openOverlay('ovRelic'); if(isDone(r.id)) showDossier(r,true); else stageScan(r); }
+function dossierHTML(r){
+ const done=isDone(r.id);
+ return `<div class="dossier"><canvas class="art" width="260" height="190" aria-hidden="true"></canvas><div class="dmeta">
+  <p class="tag ${done?'ok':''}">${t(done?'restoredTag':'waitingTag')}</p>
+  <h2>${esc(r.name)}</h2><p class="mission">${esc(L(r.mission))}</p>
+  <dl><dt>${t('site')}</dt><dd>${esc(L(r.site))}</dd><dt>${t('coords')}</dt><dd class="num">${fmtCoord(r.lat,r.lon,r.planet)}</dd>
+  <dt>${t(r.dateKind==='impact'?'impact':r.dateKind==='launch'?'launched':'landed')}</dt><dd class="num">${fmtDate(r.date)}</dd>${r.au?`<dt>${t('distSun')}</dt><dd>${esc(L(r.au))}</dd>`:''}<dt>${t('status')}</dt><dd>${esc(L(r.ended))}</dd></dl></div></div>
+  <h3>${t('science')}</h3><ul class="facts">${L(r.facts).map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`;
+}
+function paintArt(r,cnv,lit){ const c=cnv.getContext('2d'), w=cnv.width, h=cnv.height; const mars=r.planet==='mars';
+ if(r.planet==='deep'){ c.fillStyle='#04060f'; c.fillRect(0,0,w,h); const R2=mulberry32(r.lat*100|0); for(let i=0;i<140;i++){ c.fillStyle=`rgba(255,255,255,${R2()*.8})`; c.fillRect(R2()*w,R2()*h,1,1); }
+  const sg=c.createRadialGradient(w*.12,h*.85,0,w*.12,h*.85,30); sg.addColorStop(0,'rgba(255,240,200,.9)'); sg.addColorStop(1,'rgba(255,200,120,0)'); c.fillStyle=sg; c.beginPath(); c.arc(w*.12,h*.85,30,0,TAU); c.fill();
+  if(lit){ c.save(); c.globalCompositeOperation='lighter'; const gr=c.createRadialGradient(w/2,h*.5,0,w/2,h*.5,110); gr.addColorStop(0,'rgba(255,214,120,.6)'); gr.addColorStop(1,'rgba(244,140,40,0)'); c.fillStyle=gr; c.fillRect(0,0,w,h); c.restore(); }
+  drawIcon(c,r.kind,w/2,h*.52,4,lit?'#ffd987':'#c7cbd6',true); return; }
+ const g=c.createLinearGradient(0,0,0,h); g.addColorStop(0,mars?'#2a1a22':'#0b1024'); g.addColorStop(1,mars?'#5a2c1e':'#151b33'); c.fillStyle=g; c.fillRect(0,0,w,h);
+ const R=mulberry32(r.lat*1000|0); for(let i=0;i<50;i++){ c.fillStyle=`rgba(255,255,255,${R()*.6})`; c.fillRect(R()*w,R()*h*.6,1,1); }
+ if(!mars){ c.fillStyle='#3d7fd0'; c.beginPath(); c.arc(w*.82,h*.2,14,0,TAU); c.fill(); c.fillStyle='rgba(255,255,255,.7)'; c.beginPath(); c.arc(w*.82-4,h*.2-3,5,0,TAU); c.fill(); }
+ c.fillStyle=mars?'#9a4a2a':'#6f6e6a'; c.beginPath(); c.ellipse(w/2,h*1.18,w*.9,h*.48,0,0,TAU); c.fill();
+ if(lit){ c.save(); c.globalCompositeOperation='lighter'; const gr=c.createRadialGradient(w/2,h*.62,0,w/2,h*.62,110); gr.addColorStop(0,'rgba(255,214,120,.6)'); gr.addColorStop(1,'rgba(244,140,40,0)'); c.fillStyle=gr; c.fillRect(0,0,w,h); c.restore(); }
+ drawIcon(c,r.kind,w/2,h*.62,4,lit?'#ffd987':'#c7cbd6',true); }
+function showDossier(r,onlyView){ const b=body(); b.innerHTML=dossierHTML(r)+`<div class="actions"><button class="btn" data-close="ovRelic">${t('close')}</button></div>`; paintArt(r,b.querySelector('.art'),isDone(r.id)); b.scrollTop=0; }
+async function stageScan(r){ const my=FLOW; const b=body(); b.innerHTML=`<div class="log" title="${t('tapSkip')}"></div><div class="reveal" hidden></div>`; b.scrollTop=0;
+ await typeLines(b.querySelector('.log'),[{who:'sys',tag:t('sysLog'),text:t('detect',{c:fmtCoord(r.lat,r.lon,r.planet),site:L(r.site),name:r.name})},{who:'robot',tag:t('robot'),text:t('r_'+r.mini)}]);
+ if(my!==FLOW) return;
+ const rv=b.querySelector('.reveal'); if(!rv) return; rv.hidden=false; rv.innerHTML=dossierHTML(r)+`<div class="actions"><button class="btn ghost" data-close="ovRelic">${t('close')}</button><button class="btn primary" id="goMini">${t('begin')}</button></div>`;
+ paintArt(r,rv.querySelector('.art'),false); $('#goMini').onclick=()=>{ sfx.tap(); stageMini(r); }; }
+function stageMini(r){ FLOW++; const b=body(); b.scrollTop=0; const my=FLOW; const fn={dust:runDust,antenna:runAntenna,circuit:runCircuit}[r.mini]; fn(r,b,()=>{ if(my===FLOW) stageQuiz(r); }); }
+
+async function stageQuiz(r){ FLOW++; const my=FLOW; const b=body(); b.innerHTML=`<div class="log"></div><div class="quiz" hidden></div>`; b.scrollTop=0;
+ await typeLines(b.querySelector('.log'),[{who:'alert',tag:t('sysAlert'),text:t('a_'+r.mini)}]);
+ if(my!==FLOW) return; const q=b.querySelector('.quiz'); if(!q) return; q.hidden=false; const opts=L(r.quiz.o).map((s,i)=>({s,ok:i===0})); const R=mulberry32(Date.now()&0xffff); for(let i=opts.length-1;i>0;i--){ const j=(R()*(i+1))|0; [opts[i],opts[j]]=[opts[j],opts[i]]; }
+ q.innerHTML=`<h3>${t('quizT')}</h3><p class="hint">${t('quizI')}</p><p class="qq">${esc(L(r.quiz.q))}</p><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o.s)}</button>`).join('')}</div><p class="qmsg" role="status"></p><div class="qex" hidden></div>`;
+ q.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{ const o=opts[+btn.dataset.i]; if(o.ok){ sfx.ok(); btn.classList.add('right'); q.querySelectorAll('.opt').forEach(x=>x.disabled=true); q.querySelector('.qmsg').textContent=t('right');
+   const ex=q.querySelector('.qex'); ex.hidden=false; ex.innerHTML=`<p>${esc(L(r.quiz.ex))}</p><div class="actions"><button class="btn primary" id="goDlg">${t('next')}</button></div>`; $('#goDlg').onclick=()=>{ sfx.tap(); stageDialogue(r); }; $('#goDlg').focus({preventScroll:true}); ex.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+  else { sfx.bad(); btn.classList.add('wrong'); btn.disabled=true; q.querySelector('.qmsg').textContent=t('wrong'); } }); }
+
+async function stageDialogue(r){ FLOW++; const my=FLOW; const b=body(); b.innerHTML=`<div class="dlg-head"><canvas class="art sm" width="200" height="120" aria-hidden="true"></canvas></div><div class="log" title="${t('tapSkip')}"></div><div class="fin"></div>`; b.scrollTop=0;
+ const art=b.querySelector('.art'); paintArt(r,art,false);
+ const nm=r.id==='opportunity'?'Opportunity':r.name;
+ const lines = r.id==='opportunity'
+  ? [{who:'relic',tag:'OPPORTUNITY',text:L(r.voice),slow:true},{who:'note',text:t('oppyNote')},{who:'robot',tag:t('robot'),text:t('oppyGreet')}]
+  : [{who:'relic',tag:r.name.toUpperCase(),text:L(r.voice),slow:true},{who:'robot',tag:t('robot'),text:t('greet',{name:r.name.split(' –')[0].split(' (')[0]})}];
+ const lg=b.querySelector('.log');
+ await typeLines(lg,lines); if(my!==FLOW) return;
+ paintArt(r,art,true); sfx.ok();
+ await typeLines(lg,[{who:'relic',tag:(r.id==='opportunity'?'OPPORTUNITY':r.name.toUpperCase()),text:t('thanks'),slow:true},{who:'ok',tag:t('sysOk'),text:t('confirm',{name:nm})}]);
+ if(my!==FLOW) return;
+ const fin=b.querySelector('.fin'); fin.innerHTML=`<div class="actions"><button class="btn primary glow" id="goLight">${t('lightUp')}</button></div>`; fin.scrollIntoView({block:'nearest'});
+ $('#goLight').onclick=()=>{ if(!isDone(r.id)) S.restored.push(r.id); save(); closeOverlay('ovRelic'); sfx.glow(); G.burst={r,t0:performance.now()}; openHeritage({ignite:r}); }; }
+
+// ===== MINI: DUST =====
+function runDust(r,b,done){
+ const kind=r.dust||'solar';
+ b.innerHTML=`<h3>${t('m_dust')}</h3><p class="hint">${t('i_dust')}</p><div class="dustwrap"><canvas class="dbase"></canvas><canvas class="dlayer"></canvas><span class="dlabel">${t(kind)} – ${esc(r.name)}</span></div>
+  <div class="meter"><span>${t('clean')}</span><div class="bar"><i></i></div><b class="num">0%</b></div>`;
+ const wrap=b.querySelector('.dustwrap'), base=b.querySelector('.dbase'), dl=b.querySelector('.dlayer'); const w=wrap.clientWidth, h=Math.round(w*.56); wrap.style.height=h+'px';
+ const d=Math.min(2,devicePixelRatio||1); for(const cnv of [base,dl]){ cnv.width=w*d; cnv.height=h*d; }
+ const bc=base.getContext('2d'); bc.scale(d,d);
+ if(kind==='solar'){ bc.fillStyle='#8b93a6'; bc.fillRect(0,0,w,h); const cols=10, rows=5, pad=8, cw=(w-pad*2)/cols, ch=(h-pad*2)/rows;
+  for(let i=0;i<cols;i++) for(let j=0;j<rows;j++){ const x=pad+i*cw, y=pad+j*ch; const g=bc.createLinearGradient(x,y,x+cw,y+ch); g.addColorStop(0,'#1d3f8f'); g.addColorStop(.5,'#2f5fc4'); g.addColorStop(1,'#163170'); bc.fillStyle=g; bc.fillRect(x+1.5,y+1.5,cw-3,ch-3); bc.strokeStyle='rgba(200,220,255,.25)'; bc.lineWidth=.6; bc.beginPath(); bc.moveTo(x+cw/2,y+2); bc.lineTo(x+cw/2,y+ch-2); bc.stroke(); }
+  const sh=bc.createLinearGradient(0,0,w,h); sh.addColorStop(0,'rgba(255,255,255,.18)'); sh.addColorStop(.4,'rgba(255,255,255,0)'); bc.fillStyle=sh; bc.fillRect(0,0,w,h); }
+ else { const tiles=12; for(let i=0;i<tiles;i++){ const x=i*w/tiles; const g=bc.createLinearGradient(x,0,x+w/tiles,h); g.addColorStop(0,'#dfe6ef'); g.addColorStop(.5,'#a9b4c4'); g.addColorStop(1,'#eef3f9'); bc.fillStyle=g; bc.fillRect(x+1,4,w/tiles-2,h-8); } }
+ const c=dl.getContext('2d'); c.scale(d,d); const dust=r.planet==='mars'?[178,104,62]:[138,134,126]; c.fillStyle=`rgb(${dust})`; c.fillRect(0,0,w,h);
+ const R=mulberry32(77); for(let i=0;i<900;i++){ const a=R()*.25; c.fillStyle=R()<.5?`rgba(255,255,255,${a*.5})`:`rgba(0,0,0,${a})`; c.beginPath(); c.arc(R()*w,R()*h,R()*6+1,0,TAU); c.fill(); }
+ c.globalCompositeOperation='destination-out'; c.lineCap='round'; c.lineJoin='round';
+ const br=Math.max(20,w*.055); let last=null, finished=false;
+ const pt=e=>{ const rc=dl.getBoundingClientRect(); return {x:e.clientX-rc.left,y:e.clientY-rc.top}; };
+ const wipe=p=>{ c.lineWidth=br*2; c.beginPath(); c.moveTo((last||p).x,(last||p).y); c.lineTo(p.x+.01,p.y); c.stroke(); last=p; };
+ dl.addEventListener('pointerdown',e=>{ dl.setPointerCapture(e.pointerId); last=null; wipe(pt(e)); });
+ dl.addEventListener('pointermove',e=>{ if(e.buttons||e.pointerType==='touch'&&e.pressure>0) wipe(pt(e)); else last=null; });
+ dl.addEventListener('pointerup',()=>last=null);
+ const bar=b.querySelector('.bar i'), pc=b.querySelector('.meter b');
+ const iv=setInterval(()=>{ const data=c.getImageData(0,0,dl.width,dl.height).data; let clear=0,tot=0; for(let i=3;i<data.length;i+=4*7){ tot++; if(data[i]<60) clear++; } const k=clear/tot; const v=Math.min(100,Math.round(k/.93*100)); bar.style.width=v+'%'; pc.textContent=v+'%';
+  if(k>=.93&&!finished){ finished=true; clearInterval(iv); dl.style.transition='opacity .6s'; dl.style.opacity=0; bar.style.width='100%'; pc.textContent='100%'; sfx.ok(); setTimeout(done,900); } },140);
+ ACTIVE_MINI.stop=()=>clearInterval(iv);
+}
+
+// ===== MINI: ANTENNA =====
+function runAntenna(r,b,done){
+ b.innerHTML=`<h3>${t('m_antenna')}</h3><p class="hint">${t('i_antenna')}</p><div class="antwrap"><canvas class="ant" tabindex="0" aria-label="${t('m_antenna')}"></canvas></div>
+  <div class="antctl"><button class="btn round" id="aL" aria-label="◀">◀</button><div class="meter"><span>${t('signal')}</span><div class="bar"><i></i></div><b class="num">0%</b></div><button class="btn round" id="aR" aria-label="▶">▶</button></div><p class="amsg" role="status"></p>`;
+ const cnv=b.querySelector('.ant'), wrap=b.querySelector('.antwrap'); const w=wrap.clientWidth, h=Math.round(w*.58); const d=Math.min(2,devicePixelRatio||1); cnv.width=w*d; cnv.height=h*d; cnv.style.height=h+'px'; const c=cnv.getContext('2d'); c.scale(d,d);
+ const mars=r.planet==='mars', deep=r.planet==='deep'; const R=mulberry32(Date.now()&0xfff);
+ const target=30+R()*120; let ang=target+(R()<.5?-1:1)*(55+R()*35); ang=clamp(ang,8,172); let hold=0, locked=false, alive=true, dragging=false, last=performance.now(), hb=0;
+ const piv={x:w*.5,y:h*.8}; const stars=[...Array(70)].map(()=>({x:R()*w,y:R()*h*.75,a:R()}));
+ const setFromPt=e=>{ const rc=cnv.getBoundingClientRect(); const x=e.clientX-rc.left, y=e.clientY-rc.top; ang=clamp(Math.atan2(piv.y-y,x-piv.x)/RAD,5,175); };
+ cnv.addEventListener('pointerdown',e=>{ if(locked) return; dragging=true; cnv.setPointerCapture(e.pointerId); setFromPt(e); });
+ cnv.addEventListener('pointermove',e=>{ if(dragging&&!locked) setFromPt(e); });
+ cnv.addEventListener('pointerup',()=>dragging=false);
+ let hold_dir=0; const press=dir=>{ hold_dir=dir; }; const rel=()=>{ hold_dir=0; };
+ for(const [id,dir] of [['#aL',1],['#aR',-1]]){ const el=b.querySelector(id); el.addEventListener('pointerdown',()=>press(dir)); el.addEventListener('pointerup',rel); el.addEventListener('pointerleave',rel); el.addEventListener('click',()=>{ if(!locked) ang=clamp(ang+dir*1.5,5,175); }); }
+ cnv.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'){ ang=clamp(ang+2,5,175); e.preventDefault(); } if(e.key==='ArrowRight'){ ang=clamp(ang-2,5,175); e.preventDefault(); } });
+ const bar=b.querySelector('.bar i'), pc=b.querySelector('.meter b'), msg=b.querySelector('.amsg');
+ const loop=ts=>{ if(!alive) return; const dt=Math.min(.05,(ts-last)/1000); last=ts; if(hold_dir&&!locked) ang=clamp(ang+hold_dir*40*dt,5,175);
+  const diff=Math.abs(ang-target); const str=locked?1:Math.exp(-((diff/16)**2));
+  if(!locked){ if(diff<3.5){ hold+=dt; msg.textContent=t('locking'); if(ts-hb>250){ hb=ts; beep(700+hold*500,.06,'sine',.03); } } else { hold=Math.max(0,hold-dt*2); if(msg.textContent===t('locking')) msg.textContent=''; }
+   if(hold>1.1){ locked=true; ang=target; msg.textContent=t('locked'); sfx.lock(); setTimeout(()=>{ alive=false; done(); },1300); } }
+  bar.style.width=Math.round(str*100)+'%'; pc.textContent=Math.round(str*100)+'%';
+  // draw
+  const g=c.createLinearGradient(0,0,0,h); g.addColorStop(0,mars?'#3a2228':'#070b1c'); g.addColorStop(1,mars?'#8a4a33':'#141a33'); c.fillStyle=g; c.fillRect(0,0,w,h);
+  for(const s of stars){ c.fillStyle=`rgba(255,255,255,${.25+.5*s.a})`; c.fillRect(s.x,s.y,1.2,1.2); }
+  const ex=piv.x+Math.cos(target*RAD)*w*.42, ey=piv.y-Math.sin(target*RAD)*h*.66;
+  const vis=locked?1:clamp((str-.45)*2,0,.9); if(vis>0&&deep){ c.globalAlpha=vis; const sg=c.createRadialGradient(ex,ey,0,ex,ey,14); sg.addColorStop(0,'rgba(255,245,210,1)'); sg.addColorStop(1,'rgba(255,200,120,0)'); c.fillStyle=sg; c.beginPath(); c.arc(ex,ey,14,0,TAU); c.fill(); c.fillStyle='#6fa8ff'; c.beginPath(); c.arc(ex+7,ey-3,1.8,0,TAU); c.fill(); c.font='600 12px "Chakra Petch",sans-serif'; c.fillStyle='#cfe3ff'; c.textAlign='center'; c.fillText(t('earthSun'),ex,ey+26); c.globalAlpha=1; }
+  else if(vis>0){ const er=mars?4:16; c.globalAlpha=vis; c.fillStyle='#4f8fe0'; c.beginPath(); c.arc(ex,ey,er,0,TAU); c.fill(); if(!mars){ c.fillStyle='rgba(255,255,255,.75)'; c.beginPath(); c.arc(ex-4,ey-4,5,0,TAU); c.fill(); } c.font='600 12px "Chakra Petch",sans-serif'; c.fillStyle='#cfe3ff'; c.textAlign='center'; c.fillText(t('earth'),ex,ey+er+14); c.globalAlpha=1; }
+  // beam
+  const bl=w*.8; c.save(); c.translate(piv.x,piv.y-34); c.rotate(-ang*RAD); const bg2=c.createLinearGradient(0,0,bl,0); bg2.addColorStop(0,`rgba(95,208,230,${.15+.45*str})`); bg2.addColorStop(1,'rgba(95,208,230,0)'); c.fillStyle=bg2; c.beginPath(); c.moveTo(0,0); c.lineTo(bl,-bl*.12); c.lineTo(bl,bl*.12); c.closePath(); c.fill(); c.restore();
+  // ground
+  if(!deep){ c.fillStyle=mars?'#9a4a2a':'#5d5c58'; c.beginPath(); c.ellipse(w/2,h*1.25,w*.95,h*.5,0,0,TAU); c.fill(); }
+  drawIcon(c,r.kind==='heli'?'lander':r.kind,piv.x,piv.y-6,2.2,'#c7cbd6');
+  // mast + dish
+  c.strokeStyle='#dfe4ee'; c.lineWidth=3; c.beginPath(); c.moveTo(piv.x,piv.y-14); c.lineTo(piv.x,piv.y-34); c.stroke();
+  c.save(); c.translate(piv.x,piv.y-34); c.rotate(-ang*RAD); c.fillStyle='#eef2fa'; c.beginPath(); c.ellipse(4,0,5,17,0,-Math.PI/2,Math.PI/2); c.fill(); c.strokeStyle='#9aa4bf'; c.lineWidth=1; c.stroke(); c.strokeStyle='#eef2fa'; c.lineWidth=1.5; c.beginPath(); c.moveTo(4,-15); c.lineTo(20,0); c.lineTo(4,15); c.stroke(); c.fillStyle=locked?'#f4b63f':'#5fd0e6'; c.beginPath(); c.arc(20,0,2.6,0,TAU); c.fill(); c.restore();
+  // scope
+  const sx=12, sy=12, sw=Math.min(180,w*.42), shh=40; c.fillStyle='rgba(0,0,0,.45)'; c.fillRect(sx,sy,sw,shh); c.strokeStyle='rgba(95,208,230,.9)'; c.lineWidth=1.4; c.beginPath();
+  for(let i=0;i<=sw;i+=2){ const yy=sy+shh/2+Math.sin(i*.18+ts/90)*str*13+(Math.random()-.5)*(1-str)*30; i?c.lineTo(sx+i,yy):c.moveTo(sx+i,yy); } c.stroke();
+  requestAnimationFrame(loop); };
+ requestAnimationFrame(loop); ACTIVE_MINI.stop=()=>{ alive=false; };
+}
+
+// ===== MINI: CIRCUIT =====
+function runCircuit(r,b,done){
+ const ev=(g,a,c)=>g==='AND'?(a&c):g==='OR'?(a|c):(a^c);
+ const R=mulberry32((Date.now()^r.lat*997)&0xffffff); let P;
+ for(let tries=0;tries<200;tries++){ const gs=['AND','OR','XOR']; const g=[0,1,2].map(()=>gs[(R()*3)|0]); const nt=[0,1,2,3].map(()=>R()<.3);
+  const f=s=>ev(g[2],ev(g[0],s[0]^nt[0],s[1]^nt[1]),ev(g[1],s[2]^nt[2],s[3]^nt[3]));
+  let sols=0; for(let m=0;m<16;m++){ if(f([m&1,m>>1&1,m>>2&1,m>>3&1])) sols++; }
+  if(sols<1||sols>5) continue; let init=null; for(let k=0;k<20;k++){ const m=(R()*16)|0; const s=[m&1,m>>1&1,m>>2&1,m>>3&1]; if(!f(s)){ init=s; break; } } if(!init) continue; P={g,nt,f,s:init}; break; }
+ const used=new Set(P.g); if(P.nt.some(Boolean)) used.add('NOT');
+ b.innerHTML=`<h3>${t('m_circuit')}</h3><p class="hint">${t('i_circuit')}</p><ul class="legend">${['AND','OR','XOR','NOT'].filter(x=>used.has(x)).map(x=>`<li>${t('g_'+x)}</li>`).join('')}</ul><div class="circ"></div><p class="cmsg" role="status"></p>`;
+ const box=b.querySelector('.circ'); let solved=false;
+ const draw=()=>{ const s=P.s, nt=P.nt; const v=s.map((x,i)=>x^nt[i]); const g1=ev(P.g[0],v[0],v[1]), g2=ev(P.g[1],v[2],v[3]), o=ev(P.g[2],g1,g2);
+  const on='var(--wire-on)', off='var(--wire-off)'; const ys=[40,95,165,220], yin=[55,80,180,205];
+  let svg=`<svg viewBox="0 0 430 260" role="group" aria-label="${t('m_circuit')}">`;
+  for(let i=0;i<4;i++){ const y=ys[i]; if(nt[i]){ svg+=`<path d="M78 ${y} H116" class="w" stroke="${s[i]?on:off}"/><g class="not"><rect x="116" y="${y-11}" width="34" height="22" rx="4"/><text x="133" y="${y+4}">NOT</text></g><path d="M150 ${y} H162 L178 ${yin[i]} H196" class="w" stroke="${v[i]?on:off}"/>`; }
+   else svg+=`<path d="M78 ${y} H162 L178 ${yin[i]} H196" class="w" stroke="${v[i]?on:off}"/>`;
+   svg+=`<g class="sw ${s[i]?'on':''}" data-i="${i}" tabindex="0" role="switch" aria-checked="${!!s[i]}" aria-label="${'ABCD'[i]}"><rect x="14" y="${y-16}" width="64" height="32" rx="16"/><circle cx="${s[i]?62:30}" cy="${y}" r="11"/><text x="${s[i]?30:62}" y="${y+5}">${'ABCD'[i]}</text></g>`; }
+  const gate=(x,y,name,val)=>`<g class="gate ${val?'on':''}"><rect x="${x}" y="${y}" width="66" height="54" rx="10"/><text x="${x+33}" y="${y+33}">${name}</text></g>`;
+  svg+=gate(196,40,P.g[0],g1)+gate(196,165,P.g[1],g2);
+  svg+=`<path d="M262 67 H282 L300 118 H318" class="w" stroke="${g1?on:off}"/><path d="M262 192 H282 L300 142 H318" class="w" stroke="${g2?on:off}"/>`;
+  svg+=gate(318,103,P.g[2],o)+`<path d="M384 130 H398" class="w" stroke="${o?on:off}"/><circle class="lamp ${o?'on':''}" cx="412" cy="130" r="13"/><text class="olabel" x="412" y="160">${t('out')}</text></svg>`;
+  box.innerHTML=svg;
+  box.querySelectorAll('.sw').forEach(el=>{ const tog=()=>{ if(solved) return; const i=+el.dataset.i; P.s[i]^=1; sfx.tap(); draw(); }; el.addEventListener('click',tog); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tog(); const n=box.querySelector(`.sw[data-i="${el.dataset.i}"]`); n&&n.focus(); } }); });
+  if(o&&!solved){ solved=true; sfx.ok(); setTimeout(done,1100); } };
+ draw(); ACTIVE_MINI.stop=()=>{};
+}
+
+// ===== HERITAGE MAP =====
+let HM={alive:false};
+function openHeritage(opt){
+ const ign=opt.ignite||null; let pid=ign?ign.planet:(opt.planet||G.planet||'moon'); if(!TERRAIN[pid]) genTerrain(pid);
+ openOverlay('ovHeritage'); const box=$('#heritageBody');
+ const draw=()=>{
+  const done=doneCount(pid), tot=relicsOf(pid).length, all=RELICS.every(r=>isDone(r.id)); const nextP=['moon','mars','deep'].find(p=>p!==pid&&doneCount(p)<relicsOf(p).length);
+  box.innerHTML=`<div class="tabs" role="tablist">${['moon','mars','deep'].map(p=>`<button role="tab" class="tab ${p===pid?'on':''}" aria-selected="${p===pid}" data-p="${p}">${pName(p)} <span class="num">${doneCount(p)}/${relicsOf(p).length}</span></button>`).join('')}</div>
+   <div class="hmwrap"><canvas class="hm"></canvas></div><p class="hpill" role="status"></p>
+   ${ign&&ign.planet===pid?`<p class="ign">${esc(t('ignited',{name:ign.name,p:pName(pid)}))}</p>`:''}
+   <p class="meaning">${ign? t('meaning') : t('heritageHint')}</p>
+   <div class="actions">${ign&&done===tot&&!all?`<p class="pdone">${t('planetDone',{p:pName(pid)})}</p>`:''}
+    ${all&&ign?`<button class="btn primary glow" id="hFinal">${t('finish')}</button>`:''}
+    ${ign&&done===tot&&!all&&nextP?`<button class="btn" id="hOther">${t('goTo',{p:pName(nextP)})}</button>`:''}
+    <button class="btn ${all&&ign?'':'primary'}" data-close="ovHeritage">${t('explore')}</button></div>`;
+  box.querySelectorAll('.tab').forEach(tb=>tb.onclick=()=>{ sfx.tap(); pid=tb.dataset.p; if(!TERRAIN[pid]) genTerrain(pid); draw(); });
+  const f=$('#hFinal'); if(f) f.onclick=()=>{ closeOverlay('ovHeritage'); openFinal(); };
+  const o=$('#hOther'); if(o) o.onclick=()=>{ closeOverlay('ovHeritage'); enterMap(nextP); };
+  const cnv=box.querySelector('.hm'), wrap=box.querySelector('.hmwrap'); const w=wrap.clientWidth, h=w/2; const d=Math.min(2,devicePixelRatio||1); cnv.width=w*d; cnv.height=h*d; cnv.style.height=h+'px'; const c=cnv.getContext('2d');
+  const t0=performance.now(); let sel=null;
+  cnv.onclick=e=>{ const rc=cnv.getBoundingClientRect(); const x=e.clientX-rc.left, y=e.clientY-rc.top; let best=null,bd=22; for(const r of relicsOf(pid)){ const px=(r.lon+180)/360*w, py=(90-r.lat)/180*h; const dd=Math.hypot(px-x,py-y); if(dd<bd){bd=dd;best=r;} }
+   sel=best; const pill=box.querySelector('.hpill'); if(best){ sfx.tap(); pill.innerHTML=`<b>${esc(best.name)}</b> <span>${esc(L(best.site))}</span> <em class="${isDone(best.id)?'ok':''}">${t(isDone(best.id)?'restoredTag':'waitingTag')}</em> <button class="btn sm" id="hGo">${t('goHere')}</button>`;
+    $('#hGo').onclick=()=>{ closeOverlay('ovHeritage'); if(G.planet!==pid||G.mode!=='map') enterMap(pid); const q=ll2xy(best.lat,best.lon); G.target={x:q.x,y:q.y}; G.targetRelic=best; }; } else pill.textContent=''; };
+  HM.alive=false; const me={alive:true}; HM=me;
+  const loop=ts=>{ if(!me.alive||!$('#ovHeritage').classList.contains('open')) return; c.setTransform(d,0,0,d,0,0); c.drawImage(TERRAIN[pid].texCanvas,0,0,w,h); c.fillStyle='rgba(6,10,26,.45)'; c.fillRect(0,0,w,h);
+   c.save(); c.globalCompositeOperation='lighter';
+   for(const r of relicsOf(pid)){ const px=(r.lon+180)/360*w, py=(90-r.lat)/180*h; let k=1; const isIgn=ign&&ign.id===r.id;
+    if(isIgn) k=clamp((ts-t0-300)/1600,0,1);
+    if(isDone(r.id)){ const e=1-Math.pow(1-k,3); const rr=(w*.05)*(1+.12*Math.sin(ts/450+px))*e+.01; const g=c.createRadialGradient(px,py,0,px,py,rr); g.addColorStop(0,'rgba(255,232,170,1)'); g.addColorStop(.25,'rgba(244,182,63,.6)'); g.addColorStop(1,'rgba(244,140,40,0)'); c.fillStyle=g; c.beginPath(); c.arc(px,py,rr,0,TAU); c.fill();
+     if(isIgn&&k<1){ for(let i=0;i<3;i++){ const kk=clamp(k*1.4-i*.2,0,1); c.strokeStyle=`rgba(255,215,130,${(1-kk)*.9})`; c.lineWidth=2; c.beginPath(); c.arc(px,py,kk*w*.18,0,TAU); c.stroke(); } }
+    } else { c.fillStyle='rgba(150,215,232,.55)'; c.beginPath(); c.arc(px,py,2.5,0,TAU); c.fill(); }
+    if(sel===r){ c.strokeStyle='rgba(95,208,230,.95)'; c.lineWidth=1.5; c.beginPath(); c.arc(px,py,9,0,TAU); c.stroke(); } }
+   c.restore();
+   c.font='600 11px "Chakra Petch",sans-serif'; c.textAlign='left';
+   for(const r of relicsOf(pid)){ if(!isDone(r.id)) continue; if(ign&&ign.id===r.id&&ts-t0<900) continue; const px=(r.lon+180)/360*w, py=(90-r.lat)/180*h; if(w<520&&!(ign&&ign.id===r.id)&&sel!==r) continue; c.fillStyle='rgba(0,0,0,.5)'; c.fillText(r.name.split(' –')[0],px+9,py+4); c.fillStyle='#ffe2a0'; c.fillText(r.name.split(' –')[0],px+8,py+3); }
+   requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+ };
+ draw();
+}
+
+// ===== LOGBOOK =====
+function openLog(){ const b=$('#logBody');
+ b.innerHTML=['moon','mars','deep'].map(p=>`<h3>${pName(p)} <span class="num">${doneCount(p)}/${relicsOf(p).length}</span></h3><ul class="loglist">${relicsOf(p).map(r=>`<li><button class="logrow ${isDone(r.id)?'ok':''}" data-id="${r.id}"><i></i><span><b>${esc(r.name)}</b><small>${esc(L(r.site))} · ${fmtDate(r.date).slice(-4)}</small></span><em>${t(isDone(r.id)?'restoredTag':'waitingTag')}</em></button></li>`).join('')}</ul>`).join('')
+ + `<div class="actions"><button class="btn ghost" id="resetBtn">${t('reset')}</button><button class="btn primary" data-close="ovLog">${t('close')}</button></div>`;
+ b.querySelectorAll('.logrow').forEach(el=>el.onclick=()=>{ sfx.tap(); const r=RELICS.find(x=>x.id===el.dataset.id); closeOverlay('ovLog'); openOverlay('ovRelic'); showDossier(r,true); });
+ $('#resetBtn').onclick=()=>{ if(confirm(t('resetQ'))){ S.restored=[]; S.pos={}; S.planet=null; S.tut=false; save(); location.hash=''; location.reload(); } };
+ openOverlay('ovLog'); }
+function openSources(){ $('#srcBody').innerHTML=`<p>${t('srcP')}</p><ul class="src">${SOURCES.map(s=>`<li><b>${esc(s[0])}</b><span class="num">${esc(s[1])}</span></li>`).join('')}</ul><p class="hint">${t('srcNote')}</p><div class="actions"><button class="btn primary" data-close="ovSources">${t('close')}</button></div>`; $('#srcTitle').textContent=t('srcT'); openOverlay('ovSources'); }
+function openFinal(){ G.mode='final'; show('scrFinal'); $('#finalP').textContent=t('finalP',{n:RELICS.length}); }
+$('#btnReplay').onclick=()=>{ S.restored=[]; S.pos={}; S.planet=null; save(); location.reload(); };
+$('#btnFinalMap').onclick=()=>{ openHeritage({planet:'moon'}); };
+$('#btnFinalBack').onclick=()=>{ goPlanets(); };
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ const o=[...document.querySelectorAll('.overlay.open')].pop(); if(o) closeOverlay(o.id); } });
+
+window.__back=()=>{ const o=[...document.querySelectorAll('.overlay.open')].pop(); if(o){ closeOverlay(o.id); return true; }
+ if(G.mode==='map'){ S.pos[G.planet]={x:G.robot.x,y:G.robot.y}; save(); goPlanets(); return true; }
+ if(G.mode==='planets'||G.mode==='final'){ G.mode='title'; show('scrTitle'); applyLang(); return true; } return false; };
+// ===== MAIN LOOP =====
+let lastT=performance.now();
+function frame(ts){ const dt=Math.min(.05,(ts-lastT)/1000); lastT=ts; G.time=ts;
+ if(G.mode==='map'){ if(!document.querySelector('.overlay.open')) update(dt); render(ts); }
+ else if(G.mode==='title'){ const g=globes[0]; if(g){ g.rot=reduceMotion?.15:Math.sin(ts/9000)*.75; g.draw(ts); } }
+ else if(G.mode==='planets'){ for(const g of globes.slice(1)){ if(TERRAIN[g.pid]){ g.rot+=reduceMotion?0:dt*.12; g.draw(ts); } } }
+ requestAnimationFrame(frame); }
+
+// ===== BOOT =====
+function boot(){
+ resize(); syncSound(); applyLang();
+ setTimeout(()=>{ genTerrain('moon'); globes[0]=makeGlobe($('#globeTitle'),'moon',{res:340,tilt:6,rot:0});
+  globes[1]=makeGlobe($('#globe-moon'),'moon',{res:220,tilt:8,rot:-.3});
+  $('#loading').hidden=true; $('#btnStart').disabled=false;
+  setTimeout(()=>{ genTerrain('mars'); globes[2]=makeGlobe($('#globe-mars'),'mars',{res:220,tilt:18,rot:1.2});
+   setTimeout(()=>{ genTerrain('deep'); globes[3]=makeGlobe($('#globe-deep'),'deep',{res:220,tilt:20,rot:-1.4,flat:true}); },50); },50);
+ },30);
+ requestAnimationFrame(frame);
+}
+boot();
+
+})();
+</script>
+</body>
+</html>
