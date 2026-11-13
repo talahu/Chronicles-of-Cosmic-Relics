@@ -117,7 +117,7 @@ Game không dùng thư viện JavaScript bên ngoài.
 - **Mã nguồn game** và phần tổng hợp dữ liệu được xây dựng với sự hỗ trợ của trợ lý AI **Claude (Anthropic)**, dựa trên tài liệu ý tưởng của đội. Claude là công cụ hỗ trợ viết mã, không phải mô hình được tích hợp trong game.
 - **Video giới thiệu và video hướng dẫn** được dựng bằng công cụ tạo video của Claude, dùng ảnh chụp màn hình thật của game; nhạc nền do công cụ này tạo (nhạc gốc, không dùng bài hát có sẵn).
 - **Lời dẫn tiếng Anh trong video:** Hiện tại chưa có lời dẫn bằng âm thanh.
-- **Phần đội tự thực hiện:** ý tưởng, cốt truyện, cơ chế chơi và kịch bản hội thoại mẫu (tài liệu ý tưởng v6); *[đội bổ sung: kiểm chứng dữ kiện, chơi thử, chỉnh sửa…]*.
+- **Phần đội tự thực hiện:** ý tưởng, cốt truyện, cơ chế chơi và kịch bản hội thoại mẫu (tài liệu ý tưởng v6).
 
 ### Thành viên
 Theo thể lệ Space Apps, sản phẩm và video không ghi tên, giọng nói hay hình ảnh của thành viên dưới 18 tuổi. Thông tin đội được cung cấp riêng cho Ban tổ chức.
