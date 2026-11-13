@@ -14,7 +14,7 @@ An educational game: as a Heritage Recovery Robot, find NASA hardware left on th
 | | |
 |---|---|
 | ▶ **Chơi ngay trên điện thoại / máy tính (không cần cài)** | https://talahu.github.io/Chronicles-of-Cosmic-Relics/ |
-| 🎬 **Video giới thiệu (30 giây)** | *[đội dán link video]* |
+| 🎬 **Video giới thiệu (30 giây)** | https://www.youtube.com/watch?v=Ae94roPpjGI |
 | 📱 **Android (APK)** | [`dist/ChroniclesOfCosmicRelics.apk`](dist/ChroniclesOfCosmicRelics.apk) – Android 7.0+, chơi offline |
 
 Trên iPhone: mở link bằng Safari → Chia sẻ → *Thêm vào MH chính*. Trên Android: Chrome → ⋮ → *Thêm vào màn hình chính*. Sau lần mở đầu tiên, game chơi được cả khi không có mạng.
@@ -123,4 +123,4 @@ Game không dùng thư viện JavaScript bên ngoài.
 Theo thể lệ Space Apps, sản phẩm và video không ghi tên, giọng nói hay hình ảnh của thành viên dưới 18 tuổi. Thông tin đội được cung cấp riêng cho Ban tổ chức.
 
 ## Giấy phép / License
-*[Đội chọn, ví dụ MIT.]*
+MIT
