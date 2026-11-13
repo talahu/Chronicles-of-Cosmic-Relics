@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070b1c">
-<meta name="description" content="Chronicles of Cosmic Relics – game giáo dục NASA Space Apps: phục hồi thiết bị NASA trên Mặt Trăng, Sao Hỏa và không gian sâu.">
+<meta name="description" content="Chronicles of Cosmic Relics – NASA Space Apps educational game: restore NASA equipment left on the Moon, Mars and in deep space.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -403,11 +403,11 @@ body{-webkit-touch-callout:none}
  <div class="overlay" id="ovSources" aria-hidden="true" role="dialog" aria-modal="true"><div class="sheet"><button class="x" data-close="ovSources" aria-label="Close">✕</button><h2 id="srcTitle"></h2><div id="srcBody"></div></div></div>
 </div>
 <script>
-/* roundRect cho trình duyệt cũ (iOS < 16) */
+/* roundRect for older browsers (iOS < 16) */
 if(window.CanvasRenderingContext2D&&!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Math.min(typeof r==='number'?r:(r&&r[0])||0,w/2,h/2);this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();return this;};}
-/* Chặn phóng to bằng hai ngón tay trên iOS Safari (bản đồ dùng thao tác chạm riêng) */
+/* Block pinch-zoom on iOS Safari (the map has its own touch controls) */
 ['gesturestart','gesturechange'].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();},{passive:false});});
-/* Chơi offline sau lần mở đầu tiên */
+/* Offline play after the first visit */
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 </script>
 <script>
